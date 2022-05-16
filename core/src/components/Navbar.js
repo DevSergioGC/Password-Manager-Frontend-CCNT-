@@ -37,6 +37,16 @@ const Navbar = () => {
                     Log In
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to='/folder'>
+                    Folder
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to='/item'>
+                    Items
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
