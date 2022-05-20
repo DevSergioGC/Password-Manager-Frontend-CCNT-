@@ -1,14 +1,20 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import APIService from '../APIService'
 
 function Form(props) {
 
-  const [name, setName] = useState(props.folder.name)
+  const [name, setName] = useState('')
+
+  useEffect(() => {
+
+    setName(props.folder.name)
+    
+  }, [props.folder])
 
   const updateFolder = () => {
 
     APIService.UpdateFolder(props.folder.id_folders, {name})
-    .then(resp => console.log(resp))
+    .then(resp => props.updatedInformation(resp))
 
   }
 

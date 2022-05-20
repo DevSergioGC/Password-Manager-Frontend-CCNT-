@@ -8,6 +8,7 @@ export default function Folder() {
     const [editFolder, setEditFolder] = useState(null)
 
     useEffect(() =>{
+
       fetch('http://127.0.0.1:8000/api/folder/', {
         'method': 'GET',
         headers: {
@@ -22,8 +23,29 @@ export default function Folder() {
     }, [])
 
     const editBtn = (folder) => {
+
       setEditFolder(folder)
   
+    }
+
+    const updatedInformation = (folder) => {
+
+      const new_folder = folders.map(myfolder => {
+
+        if(myfolder.id === folder.id){
+
+          return folder;
+
+        }
+        else{
+
+          return myfolder;
+
+        }
+      })
+
+      setFolders(new_folder)
+
     }
   
     return (
@@ -46,10 +68,8 @@ export default function Folder() {
                 </div>
               )              
             })} 
-          </div>        
-
-          {editFolder ? <Form folder={editFolder}/> : null}
-                      
+          </div>  
+          {editFolder ? <Form folder={editFolder} updatedInformation = {updatedInformation} /> : null}                      
         </div>        
     )
 }
