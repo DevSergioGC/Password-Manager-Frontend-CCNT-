@@ -1,6 +1,7 @@
 import React from 'react'
 import Form from './Form'
 import {useState, useEffect} from 'react';
+import APIService from '../APIService'
 
 export default function Folder() {
 
@@ -58,6 +59,32 @@ export default function Folder() {
 
       const new_folder = [...folders, folder]
       setFolders(new_folder)
+
+    }
+
+    const DeleteBtn = (folder) => {
+
+      const new_folder = folders.filter(myfolder => {
+
+        if(myfolder.id_folders === folder.id_folders){
+
+          return false
+
+        }
+
+        return true
+
+      })
+
+      setFolders(new_folder)
+
+    }
+
+    const deleteBtn = (folder) => {
+
+      APIService.DeleteFolder(folder.id_folders)
+      .then(() => DeleteBtn(folder))    
+      .catch(error => console.log(error))  
 
     }
   
