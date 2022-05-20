@@ -47,11 +47,27 @@ export default function Folder() {
       setFolders(new_folder)
 
     }
+
+    const folderForm = () => {
+
+      setEditFolder({name:''})
+
+    }
+
+    const insertedInformation = (folder) => {
+
+      const new_folder = [...folders, folder]
+      setFolders(new_folder)
+
+    }
   
     return (
         <div className="folders">
           <div className="headerContainer">            
             <h2>Folders</h2>    
+            <div className="col-md-2">
+              <button onClick={folderForm} className="btn btn-primary">Create Folder</button>
+            </div>
             {folders.map(folder => {
               return (
                 <div>
@@ -69,7 +85,7 @@ export default function Folder() {
               )              
             })} 
           </div>  
-          {editFolder ? <Form folder={editFolder} updatedInformation = {updatedInformation} /> : null}                      
+          {editFolder ? <Form folder={editFolder} updatedInformation = {updatedInformation} insertedInformation = {insertedInformation} /> : null}                      
         </div>        
     )
 }

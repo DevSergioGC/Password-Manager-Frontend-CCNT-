@@ -18,6 +18,13 @@ function Form(props) {
 
   }
 
+  const insertFolder = () => {
+
+    APIService.InsertFolder({name})
+    .then(resp => props.insertedInformation(resp))
+
+  }
+
   return (
     <div>
       {props.folder ? (
@@ -26,7 +33,10 @@ function Form(props) {
           <input type="text" className="form-control" id="title" placeholder={props.folder.name}
           value= {name} onChange={e => setName(e.target.value)} />
           <br/>
-          <button onClick={updateFolder} className="btn btn-success">Update</button>
+          {            
+            props.folder.id_folders ? <button onClick={updateFolder} className="btn btn-success">Update</button>
+            : <button onClick={insertFolder} className="btn btn-success">Create</button>
+          }
         </div>
       ) : null}
     </div>
