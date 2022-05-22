@@ -1,12 +1,14 @@
 import React from 'react'
 import Form from './Form'
 import {useState, useEffect} from 'react';
+import {useCookies} from 'react-cookie';
 import APIService from '../APIService'
 
 export default function Folder() {
 
     const [folders, setFolders] = useState([])
     const [editFolder, setEditFolder] = useState(null)
+    const[token] = useCookies(['mytoken'])
 
     useEffect(() =>{
 
@@ -14,7 +16,7 @@ export default function Folder() {
         'method': 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Token b177a25b4583b9ddff077c2bb5b6c4a89a6d1e9f'
+          'Authorization': `Token ${token['mytoken']}`
         }
       })
       .then(resp => resp.json())
@@ -82,7 +84,7 @@ export default function Folder() {
 
     const deleteBtn = (folder) => {
 
-      APIService.DeleteFolder(folder.id_folders)
+      APIService.DeleteFolder(folder.id_folders, token['mytoken'])
       .then(() => DeleteBtn(folder))    
       .catch(error => console.log(error))  
 
