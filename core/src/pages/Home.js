@@ -1,8 +1,19 @@
 import React from 'react';
-import {Link} from "react-router-dom";
-import {useState, useEffect} from 'react';
+import {useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
 
-function Home() {
+function Home(props) {
+
+  let navigate = useNavigate()
+
+  useEffect(() => {
+
+    if(!props.token) {
+
+      navigate('/login')        
+       
+    }
+  }, [props.token])
 
   return (
     <div className="home">

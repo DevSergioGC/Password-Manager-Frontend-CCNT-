@@ -23,7 +23,7 @@ export default function Folder() {
       .then(resp => setFolders(resp))
       .catch(error => console.log(error))
   
-    }, [])
+    }, [folders])
 
     const editBtn = (folder) => {
 
@@ -31,23 +31,9 @@ export default function Folder() {
   
     }
 
-    const updatedInformation = (folder) => {
+    const updatedInformation = (folder) => {      
 
-      const new_folder = folders.map(myfolder => {
-
-        if(myfolder.id === folder.id){
-
-          return folder;
-
-        }
-        else{
-
-          return myfolder;
-
-        }
-      })
-
-      setFolders(new_folder)
+      return folder    
 
     }
 
@@ -66,20 +52,8 @@ export default function Folder() {
 
     const DeleteBtn = (folder) => {
 
-      const new_folder = folders.filter(myfolder => {
-
-        if(myfolder.id_folders === folder.id_folders){
-
-          return false
-
-        }
-
-        return true
-
-      })
-
-      setFolders(new_folder)
-
+      return false
+      
     }
 
     const deleteBtn = (folder) => {
@@ -99,13 +73,13 @@ export default function Folder() {
             </div>
             {folders.map(folder => {
               return (
-                <div>
+                <div key={folder.id_folders}>
                   <h3>{folder.name}</h3>
                   <div className = "row">
-                    <div className = "col-md-1">
+                    <div className = "col-md">
                       <button className = "btn btn-primary" onClick  = {() => editBtn(folder)}>Update</button>
                     </div>
-                    <div className = "col">
+                    <div className = "col-md">
                       <button onClick = {() => deleteBtn(folder)} className = "btn btn-danger">Delete</button>
                     </div>
                   </div>

@@ -1,6 +1,18 @@
 import React from "react";
+import {useNavigate} from 'react-router-dom';
 
 function Register() {
+
+  let navigate = useNavigate()
+
+  const RegisterBtn = () => {
+
+    APIService.RegisterUser({username, full_name, master_pwd})
+    .then(resp => console.log(resp))
+    .catch(error => console.log(error))
+
+}
+
   return (
     <div className="container">
       <div class="mb-3">
@@ -49,11 +61,7 @@ function Register() {
         />
       </div>
       <div>        
-        <input
-          type="button"          
-          name="name"
-          value="Register"
-        />
+        <button onClick={() => navigate('/login')} class="btn btn-primary">Register</button>
       </div>
     </div>
   );

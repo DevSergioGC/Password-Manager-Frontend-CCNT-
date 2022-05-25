@@ -7,14 +7,15 @@ function Login() {
 
     const[username, setUsername] = useState('')
     const[password, setPassword] = useState('')
-    const[token, setToken] = useCookies(['mytoken'])
-    let history = useNavigate()
+    const[token, setToken] = useCookies(['mytoken'])    
+    let navigate = useNavigate()
 
+    //! Usar este hook en el formulario de registro
     useEffect(() =>{
 
         if (token['mytoken']){
 
-            history('/folder')
+            navigate('/folder')
 
         }
 
@@ -23,13 +24,19 @@ function Login() {
     const loginBtn = () => {
 
         APIService.LoginUser({username, password})
-        .then(resp => setToken('mytoken', resp.token))
+        .then(resp => setToken('mytoken', resp.token));
         
+
+    }    
+
+    const handleSubmit = (e) => {
+
+        e.preventDefault();
 
     }
 
     return (              
-        <form className="container">
+        <form className="container" onSubmit={handleSubmit}>
                 <div className="row">
                     <div className="mb-3 col">
                         <label htmlFor="username" className="form-label">Username:</label>
@@ -51,7 +58,12 @@ function Login() {
                         value={password} 
                         onChange={e => setPassword(e.target.value)} />
                     </div>               
-                    <button onClick={loginBtn} className="btn btn-primary">Login</button>
+                    <button onClick={loginBtn} className="btn btn-success">Login</button>
+
+                    <div className="mb-3">
+                        <br/>
+                        <h5>If You Don't Have Account, Please <button onClick={() => navigate('/register')} className="btn btn-primary">Register</button> Here</h5>
+                    </div>
                 </div>
         </form>               
     )

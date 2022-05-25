@@ -1,7 +1,7 @@
 import React from "react";
 import {Link} from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar = (props) => {
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -33,9 +33,12 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to='/login'>
-                    Log In
-                </Link>
+                {
+                  !props.token ? 
+                  <Link className="nav-link" to='/login'>Login</Link> 
+                  :
+                  <button className="nav-link" onClick={props.logoutBtn}>Logout</button>
+                }
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to='/folder'>
