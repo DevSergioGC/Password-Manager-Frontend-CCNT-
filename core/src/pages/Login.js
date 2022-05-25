@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from "react";
 import APIService from '../APIService';
+import Form from '../components/Form'
 import {useCookies} from 'react-cookie';
 import {useNavigate} from 'react-router-dom';
 
 function Login() {  
 
     const[username, setUsername] = useState('')
-    const[password, setPassword] = useState('')
+    const[password, setPassword] = useState('')    
     const[token, setToken] = useCookies(['mytoken'])    
     let navigate = useNavigate()
 
@@ -35,8 +36,10 @@ function Login() {
 
     }
 
-    return (              
-        <form className="container" onSubmit={handleSubmit}>
+    return (   
+        
+        <>       
+            <form className="container" onSubmit={handleSubmit}>
                 <div className="row">
                     <div className="mb-3 col">
                         <label htmlFor="username" className="form-label">Username:</label>
@@ -65,7 +68,14 @@ function Login() {
                         <h5>If You Don't Have Account, Please <button onClick={() => navigate('/register')} className="btn btn-primary">Register</button> Here</h5>
                     </div>
                 </div>
-        </form>               
+            </form>   
+
+            <Context.Provider value={username}>
+                <Form />
+            </Context.Provider>         
+        </>
+        
+                       
     )
 }
 

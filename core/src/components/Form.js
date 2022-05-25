@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import APIService from '../APIService'
 import {useCookies} from 'react-cookie';
 
 function Form(props) {
 
   const [name, setName] = useState('')
+  const username = useContext(Context);
   const[token] = useCookies(['mytoken'])
 
   useEffect(() => {

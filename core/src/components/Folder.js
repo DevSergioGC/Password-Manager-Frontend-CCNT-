@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react';
 import {useCookies} from 'react-cookie';
 import APIService from '../APIService'
 
-export default function Folder() {
+export default function Folder(props) {
 
     const [folders, setFolders] = useState([])
     const [editFolder, setEditFolder] = useState(null)
