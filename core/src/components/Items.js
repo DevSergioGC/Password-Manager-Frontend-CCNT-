@@ -1,4 +1,5 @@
 import React from 'react';
+import ItemsForm from './ItemsForm';
 import {useState, useEffect} from 'react';
 
 function Item() {
@@ -32,7 +33,8 @@ function Item() {
             )
           })}
         </div>
-    </div>
+        <ItemsForm />
+    </div>    
   )
 }
 
