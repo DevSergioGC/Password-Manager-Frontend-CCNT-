@@ -52,8 +52,8 @@ function Register() {
         message: "Password must have at least 15 characters"
       },
       pattern: {
-        value: /\w([A-Z]{1})\w([0-9]{1})\w/g,
-        message: "Password must have: 8 characters min | 1 mayus character | 1 number"
+        value: /^(?=.*\d)(?=.*[a-z])(?=(.*[0-9]){2,})(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[^\w\d\s]).{15,}$/gm,
+        message: "Password must have: 1 Uppercase | 2 Number | 2 Special Characters"
       }
     },
     password2: {

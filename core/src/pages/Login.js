@@ -21,10 +21,9 @@ function Login() {
 
     useEffect(() =>{
 
-        if (!token['mytoken']){
+        if (token['mytoken']){            
             
-            console.log(token)
-            navigate('/login');
+            navigate('/');
 
         }
 
