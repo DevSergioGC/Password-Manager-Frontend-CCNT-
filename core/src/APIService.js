@@ -2,9 +2,9 @@ import {useCookies} from 'react-cookie';
 
 export default class APIService {
 
-    static UpdateFolder(id_folders, body, token){
+    static Update(id, body, token, model){
 
-        return fetch(`http://127.0.0.1:8000/api/folder/${id_folders}/`, {
+        return fetch(`http://127.0.0.1:8000/api/${model}/${id}/`, {
             'method': 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -16,9 +16,9 @@ export default class APIService {
 
     }
 
-    static InsertFolder(body, token){
+    static Insert(body, token, model){
 
-        return fetch('http://127.0.0.1:8000/api/folder/', {
+        return fetch(`http://127.0.0.1:8000/api/${model}/`, {
             'method': 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -30,9 +30,9 @@ export default class APIService {
 
     }
 
-    static DeleteFolder(id_folders, token){
+    static Delete(id, token, model){
 
-        return fetch(`http://127.0.0.1:8000/api/folder/${id_folders}/`, {
+        return fetch(`http://127.0.0.1:8000/api/${model}/${id}`, {
             'method': 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export default class APIService {
 
         })
 
-    }
+    }    
 
     static LoginUser(body) {
 
@@ -52,7 +52,9 @@ export default class APIService {
             }, 
             body:JSON.stringify(body)
   
-        }).then(resp => resp.json())
+        })
+        .then(resp => resp.json())
+        .catch(err => err.json());
   
     }
 

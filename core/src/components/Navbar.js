@@ -26,30 +26,37 @@ const Navbar = (props) => {
                 <Link className="nav-link" to='/'>
                   Home
                 </Link>
-              </li>              
-              <li className="nav-item">
-                <Link className="nav-link" to="/register">
-                  Register
-                </Link>
-              </li>
-              <li className="nav-item">
-                {
-                  !props.token ? 
-                  <Link className="nav-link" to='/login'>Login</Link> 
-                  :
-                  <button className="nav-link" onClick={props.logoutBtn}>Logout</button>
-                }
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to='/folder'>
-                    Folder
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to='/item'>
-                    Items
-                </Link>
-              </li>
+              </li>    
+              {
+                props.token ?
+                  <li className="nav-item">
+                    <Link className="nav-link" to='/folder'>
+                        Folder
+                    </Link>
+                  </li>
+                :
+                  null
+              }                    
+              {
+                !props.token ?
+                  <li className="nav-item">
+                    <Link className="nav-link" to='/login'>
+                        Login
+                    </Link>
+                  </li>
+                :
+                  <button className="btn btn-danger" onClick={props.logoutBtn}>Logout</button>
+              }                    
+              {
+                !props.token ?
+                  <li className="nav-item">
+                    <Link className="nav-link" to='/register'>
+                        Register
+                    </Link>
+                  </li>
+                :
+                  null
+              }                       
             </ul>
           </div>
         </div>

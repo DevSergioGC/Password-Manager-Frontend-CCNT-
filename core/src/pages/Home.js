@@ -1,27 +1,33 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import {useEffect} from 'react';
+import {useCookies} from 'react-cookie';
 import {useNavigate} from 'react-router-dom';
 
-function Home(props) {
+function Home() {
 
-  let navigate = useNavigate()
+  const[token] = useCookies(['mytoken']);  
+  let navigate = useNavigate();     
 
   useEffect(() => {
 
-    if(!props.token) {
+    if(!token) {
 
       navigate('/login')        
        
     }
-  }, [props.token])
+  }, [token])    
 
-  return (
-    <div className="home">
-        <div className="headerContainer">
-          <h1>Password Manager - Sergio Guzman</h1>
-          <h3>SAVE ANYTHING YOU WANT</h3>     
-        </div>
+  return (   
+        
+    <div className="container">
+      <div className="home">
+          <div className="headerContainer">
+            <h1>Password Manager - Sergio Guzman</h1>
+            <h3>SAVE ANYTHING YOU WANT</h3>             
+          </div>
+      </div>
     </div>
+
   )
 }
 

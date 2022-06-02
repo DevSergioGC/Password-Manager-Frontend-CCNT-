@@ -11,14 +11,19 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 
 function App() {  
 
+  //! PASAR CON CONTEXT LOS FOLDERS, ITEMS Y USERS A TODOS LOS COMPONENTES 
+  //? USER SE ENVIARA A APP.JS DESDE LOGIN CON EL USUARIO LOGUEADO
+
   const[token, removeToken] = useCookies(['mytoken'])
   //let navigate = useNavigate()
 
   const logoutBtn = () => {
 
-    removeToken(['mytoken'])    
-
+    removeToken(['mytoken'], {path:'/'})
+    
   } 
+
+  //{token['mytoken']  ? <button onClick={logoutBtn} className="btn btn-primary">Logout</button> : null}
 
   return (
     <div className="App"> 
@@ -31,9 +36,7 @@ function App() {
         <Route path="/folder" element={<Folder />} />
         <Route path="/item" element={<Items />} />
       </Routes>
-    </Router> 
-
-    {token['mytoken']  ? <button onClick={logoutBtn} className="btn btn-primary">Logout</button> : null}  
+    </Router>      
     </div>
   );
 }

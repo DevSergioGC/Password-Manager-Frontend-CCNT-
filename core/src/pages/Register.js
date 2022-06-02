@@ -1,11 +1,12 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import { useForm } from "react-hook-form";
 import {useNavigate} from 'react-router-dom';
 import APIService from '../APIService';
 
 function Register() {
 
-  const { register, handleSubmit, formState: { errors }, watch } = useForm();
+  const { register, handleSubmit, formState: { errors }, watch } = useForm();  
+  const handleError = (errors) => {};
   let navigate = useNavigate()
 
   const handleRegistration = (data) => {
@@ -14,20 +15,41 @@ function Register() {
     .then(navigate('/login'))
     .catch(error => console.log(error))
 
-  };
+  }; 
 
-  const handleError = (errors) => {};
+  const [user, setUser] = useState(()=>{
+
+    fetch('http://127.0.0.1:8000/api/user/', {
+      'method': 'GET',
+      headers: {
+        'Content-Type': 'application/json',        
+      }
+    })
+    .then(resp => resp.json())
+    .then(resp => setUser(resp))
+    .catch(error => console.log(error))
+
+  });
 
   //! Password test with regular expresion: aSa2asda
 
   const registerOptions = {
     name: { required: "Name is required" },
-    username: { required: "username is required" },
+    username: { 
+      required: "username is required",
+      validate: value => {
+        user.map(users => {                  
+          if(value === users.username){                        
+            return "This username is taken"
+          }
+        })
+      } 
+    },
     password: {
       required: "Password is required",
       minLength: {
-        value: 8,
-        message: "Password must have at least 8 characters"
+        value: 15,
+        message: "Password must have at least 15 characters"
       },
       pattern: {
         value: /\w([A-Z]{1})\w([0-9]{1})\w/g,
@@ -37,7 +59,7 @@ function Register() {
     password2: {
       required: "Password confirmation is required",
       validate: value => { 
-        if (watch('password') != value) {
+        if (watch('password') != value) {          
           return "Your passwords do no match";
         }
       }

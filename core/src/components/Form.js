@@ -4,6 +4,8 @@ import {useCookies} from 'react-cookie';
 
 function Form(props) {
 
+  //! Add to body the user id
+
   const [name, setName] = useState('')
   const[token] = useCookies(['mytoken'])
 
@@ -15,14 +17,14 @@ function Form(props) {
 
   const updateFolder = () => {
 
-    APIService.UpdateFolder(props.folder.id_folders, {name}, token['mytoken'])
+    APIService.Update(props.folder.id_folders, {name}, token['mytoken'], "folder")
     .then(resp => props.updatedInformation(resp))
 
   }
 
-  const insertFolder = () => {
+  const insertFolder = () => {    
 
-    APIService.InsertFolder({name}, token['mytoken'])
+    APIService.Insert({name}, token['mytoken'], "folder")
     .then(resp => props.insertedInformation(resp))
 
   }

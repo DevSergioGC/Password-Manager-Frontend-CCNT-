@@ -1,72 +1,84 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, createContext} from "react";
 import APIService from '../APIService';
+import { useForm } from "react-hook-form";
 import {useCookies} from 'react-cookie';
 import {useNavigate} from 'react-router-dom';
 
-function Login() {  
+function Login() {      
 
-    const[username, setUsername] = useState('')
-    const[password, setPassword] = useState('')
-    const[token, setToken] = useCookies(['mytoken'])    
-    let navigate = useNavigate()
+    const { register, handleSubmit, formState: { errors } } = useForm();  
+    const handleError = (errors) => {};
+    const[token, setToken] = useCookies(['mytoken']);       
+    let navigate = useNavigate();
 
-    //! Usar este hook en el formulario de registro
+    const handleRegistration = (data) => {
+
+        APIService.LoginUser(data)
+        .then(resp => setToken('mytoken', resp.token))
+        .catch(error => console.log(error));    
+    
+    };
+
     useEffect(() =>{
 
-        if (token['mytoken']){
-
-            navigate('/folder')
+        if (!token['mytoken']){
+            
+            console.log(token)
+            navigate('/login');
 
         }
 
     }, [token])
 
-    const loginBtn = () => {
-
-        APIService.LoginUser({username, password})
-        .then(resp => setToken('mytoken', resp.token));
-        
-
-    }    
-
-    const handleSubmit = (e) => {
-
-        e.preventDefault();
-
+    const registerOptions = {               
+        username: { 
+            required: "Username is required",            
+            /*validate: value => {
+                myuser = user.filter(myuser => myuser.username === value)
+                if(!myuser){
+                    return "User not register"
+                }
+            }*/
+        },
+        password: {
+            required: "Password is required",
+            //! Add validate property                       
+        }        
     }
 
-    return (              
-        <form className="container" onSubmit={handleSubmit}>
-                <div className="row">
+    return (
+        <div className="container">
+            <form onSubmit={handleSubmit(handleRegistration, handleError)}>
+                <div className="col">
                     <div className="mb-3 col">
                         <label htmlFor="username" className="form-label">Username:</label>
-                        <input 
+                        <input
+                        className="form-control" 
+                        name="username" 
                         type="text" 
-                        className="form-control" 
-                        id="username" 
-                        placeholder="Enter a username"                        
-                        value={username} 
-                        onChange={e => setUsername(e.target.value)} />                    
+                        {...register('username', registerOptions.username) }
+                        />
+                        <label className="text-danger">{errors?.username && errors.username.message}</label>
                     </div>
-                    <div className="mb-3 col-12">
-                        <label htmlFor="password" className="form-label">Password</label>
-                        <input 
-                        type="password" 
+                    <div className="mb-3 col">
+                        <label htmlFor="password" className="form-label">Password:</label>
+                        <input
                         className="form-control" 
-                        id="password" 
-                        placeholder="Enter a password"                        
-                        value={password} 
-                        onChange={e => setPassword(e.target.value)} />
-                    </div>               
-                    <button onClick={loginBtn} className="btn btn-success">Login</button>
-
+                        name="password" 
+                        type="password" 
+                        {...register('password', registerOptions.password) }
+                        />
+                        <label className="text-danger">{errors?.password && errors.password.message}</label>
+                    </div>   
+                    <button className="btn btn-success">Login</button>
                     <div className="mb-3">
                         <br/>
                         <h5>If You Don't Have Account, Please <button onClick={() => navigate('/register')} className="btn btn-primary">Register</button> Here</h5>
-                    </div>
-                </div>
-        </form>                      
-    )
+                    </div>                 
+                </div>                
+            </form>
+        </div>
+    )    
 }
 
 export default Login;

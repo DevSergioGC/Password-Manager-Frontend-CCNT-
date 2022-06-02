@@ -1,144 +1,181 @@
-import React, {useState, useEffect} from 'react'
-import APIService from '../APIService'
+import React, {useState, useEffect, useContext} from 'react'
+import { useForm } from "react-hook-form";
+import APIService from '../APIService';
 import {useCookies} from 'react-cookie';
+import {useNavigate} from 'react-router-dom';
 
-function ItemsForm(props) {
+function ItemsForm(props) {       
 
-    const initialValues = { name: "", login: "", password: "" , description: "", url: ""};
-    const [formValues, setFormValues] = useState(initialValues);
-    const [formErrors, setFormErrors] = useState({});
-    const [isSubmit, setIsSubmit] = useState(false);
+    const { register, handleSubmit, formState: { errors } } = useForm();  
+    const[token] = useCookies(['mytoken']);        
+    const handleError = (errors) => {};
+    let navigate = useNavigate();
 
-    const handleChange = (e) => {
+    const [folder, setFolder] = useState(() => {
 
-        const { name, value } = e.target;
-        setFormValues({ ...formValues, [name]: value });
-
-    };
-
-    const handleSubmit = (e) => {
-
-        e.preventDefault();
-        setFormErrors(validate(formValues));
-        setIsSubmit(true);
-
-    };
-
-    useEffect(() => {
-
-        console.log(formErrors);
-
-        if (Object.keys(formErrors).length === 0 && isSubmit) {
-
-            console.log(formValues);
-
+        fetch('http://127.0.0.1:8000/api/folder/', {
+        'method': 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token['mytoken']}`
         }
+      })
+      .then(resp => resp.json())
+      .then(resp => setFolder(resp))
+      .catch(error => console.log(error))      
 
-    }, [formErrors]);
+    });
 
-    const validate = (values) => {
+    const InsertItem = (data) => {
 
-        const errors = {};
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+        APIService.Insert({
+            'name': data.name,
+            'password': data.password,
+            'description': data.description,
+            'url': data.url,
+            'folder': data.folder,
+        }, token['mytoken'], "item")
+        .then(resp => props.insertedInformation(resp));
+
+        props.setShowItemForm(!props.showItemForm)
+
+    }
+
+    const updateItem = (data) => {
         
-        if (!values.name) {
+        APIService.Update(props.item.id_item, {
+            'name': data.name,
+            'password': data.password,
+            'description': data.description,
+            'url': data.url,
+            'folder': data.folder,
+        }, token['mytoken'], "item")
+        .then(resp => props.updatedInformation(resp));
 
-            errors.username = "Name is required!";
+        props.setShowItemForm(!props.showItemForm)
+    }
 
-        }
+    const handleRegistration = (data) => {
 
-        if (!values.login) {
+        //? Function calling APIService to insert/update items
 
-            errors.email = "Login is required!";
-
-        } 
-
-        if(!values.password) {
-
-            errors.password = "Password is required!";
-
-        }else if (!regex.test(values.password)) {
-
-            errors.password = "Password needs to have: 8 characters min | 1 mayus character | 1 number";
-
-        }
-
-        return errors;
+        props.isEditable ? 
+        updateItem(data)
+        :
+        InsertItem(data)
 
     };
 
-  return (
-    <div>
-        <form onSubmit={handleSubmit} className="mb-3">
-            <h1>Item Form</h1>
-            <div className="Container">
-                <div className="Form">
-                    <div className="field">
+    const registerOptions = {
+        name: { required: "Name is required" },        
+        password: {
+          required: "Password is required",
+          minLength: {
+            value: 8,
+            message: "Password must have at least 8 characters"
+          },
+          pattern: {
+            value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
+            message: "Password must have: 8 characters min | 1 mayus character | 1 number"
+          }
+        },
+        description: {
+            maxLength: {
+                value: 150,
+                message: "Description can not be too large"
+            }
+        },
+        url: {
+            pattern: {
+                value: /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/ig,
+                message: "Url must be like 'wwww.example.com'"
+            }
+        },
+        folder: {required: "You must select one folder"}
+      }
+    
+    return (
+        <div className="container">
+            <form onSubmit={handleSubmit(handleRegistration, handleError)}>
+                <div className="row">
+                    <div className="mb-3 col">
                         <label htmlFor="name" className="form-label">Name:</label>
                         <input
-                            type="text"
-                            name="name"
-                            placeholder="Item's name"
-                            className="form-control"
-                            value={formValues.name}
-                            onChange={handleChange}
+                        className="form-control" 
+                        name="name" 
+                        type="text" 
+                        placeholder= {props.isEditable ? props.item.name : ""}
+                        {...register('name', registerOptions.name) }
                         />
+                        <label className="text-danger">{errors?.name && errors.name.message}</label>
                     </div>
-                    <p>{formErrors.name}</p>
-                    <div className="field">
-                        <label htmlFor="login" className="form-label">Login:</label>
-                        <input
-                            type="text"
-                            name="login"
-                            placeholder="Username/Email"
-                            className="form-control"
-                            value={formValues.login}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <p>{formErrors.login}</p>
-                    <div className="field">
+                    <div className="mb-3 col">
                         <label htmlFor="password" className="form-label">Password:</label>
                         <input
-                            type="password"
-                            name="password"
-                            placeholder="Item's password"
-                            className="form-control"
-                            value={formValues.password}
-                            onChange={handleChange}
+                        className="form-control" 
+                        name="password" 
+                        type="password" 
+                        {...register('password', registerOptions.password) }
                         />
+                        <label className="text-danger">{errors?.password && errors.password.message}</label>
                     </div>
-                    <p>{formErrors.password}</p>
-                    <div className="field">
+                    <div className="mb-3 col">
                         <label htmlFor="description" className="form-label">Description:</label>
-                        <input
-                            type="richtext"
-                            name="description"
-                            placeholder="Item's description"
-                            className="form-control"
-                            value={formValues.description}
-                            onChange={handleChange}
+                        <textarea
+                        className="form-control" 
+                        name="description"                          
+                        rows = "2"
+                        placeholder= {props.isEditable ? props.item.description : ""}
+                        {...register('description', registerOptions.description) }
                         />
+                        <label className="text-danger">{errors?.description && errors.description.message}</label>
                     </div>
-                    <p>{formErrors.description}</p>
-                    <div className="field">
-                        <label htmlFor="url" className="form-label">URL:</label>
+                    <div className="mb-3 col">
+                        <label htmlFor="url" className="form-label">Site URL:</label>
                         <input
-                            type="text"
-                            name="url"
-                            placeholder="Item's url"
-                            className="form-control"
-                            value={formValues.url}
-                            onChange={handleChange}
+                        className="form-control"                        
+                        name="url" 
+                        type="text" 
+                        placeholder= {props.isEditable ? props.item.url : "www.example.com"}
+                        {...register('url', registerOptions.url) }
                         />
+                        <label className="text-danger">{errors?.url && errors.url.message}</label>
                     </div>
-                    <p>{formErrors.url}</p>  
-                    <button className="btn btn-primary">Crear</button>                  
+                    <div className="mb-3 col">
+                        <label htmlFor="id_folder" className="form-label">Folder:</label>
+                        <select className="form-select" {...register('folder', registerOptions.folder) }>                            
+                            {props.isEditable ? 
+                                folder.map(folder => {
+                                    return (
+                                        <>
+                                        {folder.id_folders === item.folder ? 
+                                        <option key={folder.id_folders} value={folder.id_folders} selected>{folder.name}</option> 
+                                        : 
+                                        <option key={folder.id_folders} value={folder.id_folders}>{folder.name}</option>
+                                        }                                        
+                                        </>
+                                    )
+                                })
+                            :
+                                null
+                            }
+                            {folder ? 
+                                folder.map(folder => {
+                                    return (
+                                        <option key={folder.id_folders} value={folder.id_folders}>{folder.name}</option>
+                                    )
+                                })
+                                :
+                                null
+                            }
+                        </select>
+                        <label className="text-danger">{errors?.id_folder && errors.id_folder.message}</label>
+                    </div>
+                    <button className="btn btn-primary">Create Item</button>
                 </div>
-            </div>
-        </form>
-    </div>
-  )
+            </form>
+        </div>
+    )
 }
 
 export default ItemsForm
