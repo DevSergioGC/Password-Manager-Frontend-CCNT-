@@ -7,6 +7,7 @@ function Home() {
 
   const[token] = useCookies(['mytoken']);  
   let navigate = useNavigate();     
+  const[isCollapse, setCollapse] = useState(false);
 
   useEffect(() => {
 
@@ -25,7 +26,7 @@ function Home() {
             <h1>Password Manager - Sergio Guzman</h1>
             <h3>SAVE ANYTHING YOU WANT</h3>             
           </div>
-      </div>
+      </div>      
     </div>
 
   )

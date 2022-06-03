@@ -4,15 +4,13 @@ import {useState, useEffect, useContext} from 'react';
 import {useCookies} from 'react-cookie';
 import APIService from '../APIService';
 import Items from './Items';
+import Accordion from './Accordion';
 
 export default function Folder() {
 
-  const [folders, setFolders] = useState([])
-  const [items, setItems] = useState([])
-  const [editFolder, setEditFolder] = useState(null)
-  const[isCollapse, setCollapse] = useState(false) 
-  const[showItemForm, setShowItemForm] = useState(false) 
-  const[token] = useCookies(['mytoken'])   
+  const [folders, setFolders] = useState([]);  
+  const [editFolder, setEditFolder] = useState(null);  
+  const[token] = useCookies(['mytoken']);  
 
   useEffect(() =>{
 
@@ -27,15 +25,7 @@ export default function Folder() {
     .then(resp => setFolders(resp))
     .catch(error => console.log(error))      
   
-  }, [folders])
-
-  useEffect(() =>{
-
-    if(isCollapse){
-      setShowItemForm(false);
-    }
-
-  }, [isCollapse])  
+  }, [folders]);    
 
   const editBtn = (folder) => {
 
@@ -75,8 +65,30 @@ export default function Folder() {
     .catch(error => console.log(error))  
 
   }
-  
+
   return (
+    <div className="container">
+      <h1 className="title">Folders</h1>
+      <div className="">
+        <div className="accordion">
+          <div className="accordion-item">
+            {folders.map(folder => (           
+              <>
+                <Items 
+                  folder={folder} 
+                  deleteBtn={deleteBtn}
+                  editBtn={editBtn}
+                />
+                {editFolder ? <Form folder={editFolder} updatedInformation = {updatedInformation} insertedInformation = {insertedInformation} /> : null}                    
+              </>              
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+  
+  /*return (
       <div className="folders">
         <div className="headerContainer">            
           <h2>Folders</h2>    
@@ -103,7 +115,7 @@ export default function Folder() {
                     <button onClick = {() => deleteBtn(folder)} className = "btn btn-danger">Delete</button>
                   </div>                                   
                 </div>
-                }                
+                }                               
                 {!isCollapse ?
                   null
                 : 
@@ -119,5 +131,5 @@ export default function Folder() {
         </div>  
         {editFolder ? <Form folder={editFolder} updatedInformation = {updatedInformation} insertedInformation = {insertedInformation} /> : null}                            
       </div>        
-  )
+  )*/
 }
