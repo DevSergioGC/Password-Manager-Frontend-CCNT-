@@ -4,13 +4,11 @@ import {useState, useEffect, useContext} from 'react';
 import {useCookies} from 'react-cookie';
 import APIService from '../APIService';
 import Items from './Items';
-import Accordion from './Accordion';
 
 export default function Folder() {
 
-  const [folders, setFolders] = useState([]);  
-  const [editFolder, setEditFolder] = useState(null);  
-  const[token] = useCookies(['mytoken']);  
+  const [folders, setFolders] = useState([]);    
+  const[token] = useCookies(['mytoken']); 
 
   useEffect(() =>{
 
@@ -25,46 +23,7 @@ export default function Folder() {
     .then(resp => setFolders(resp))
     .catch(error => console.log(error))      
   
-  }, [folders]);    
-
-  const editBtn = (folder) => {
-
-    setEditFolder(folder)
-  
-  }
-
-  const updatedInformation = (folder) => {      
-
-    return folder    
-
-  }
-
-  const folderForm = () => {
-
-    setEditFolder({name:''})
-
-  }
-
-  const insertedInformation = (folder) => {
-
-    const new_folder = [...folders, folder]
-    setFolders(new_folder)
-
-  }
-
-  const DeleteBtn = (folder) => {
-
-    return false
-      
-  }
-
-  const deleteBtn = (folder) => {
-
-    APIService.Delete(folder.id_folders, token['mytoken'], "folder")
-    .then(() => DeleteBtn(folder))    
-    .catch(error => console.log(error))  
-
-  }
+  }, [folders]); 
 
   return (
     <div className="container">
@@ -72,64 +31,17 @@ export default function Folder() {
       <div className="">
         <div className="accordion">
           <div className="accordion-item">
-            {folders.map(folder => (           
-              <>
-                <Items 
-                  folder={folder} 
-                  deleteBtn={deleteBtn}
-                  editBtn={editBtn}
-                />
-                {editFolder ? <Form folder={editFolder} updatedInformation = {updatedInformation} insertedInformation = {insertedInformation} /> : null}                    
-              </>              
+            {folders.map(folder => ( 
+
+              <Items 
+                folder={folder}                 
+              />                      
+                           
             ))}
           </div>
         </div>
       </div>
     </div>
-  )
+  ) 
   
-  /*return (
-      <div className="folders">
-        <div className="headerContainer">            
-          <h2>Folders</h2>    
-          <div className="col-md-2">
-            <button onClick={folderForm} className="btn btn-primary">Create Folder</button>
-          </div>
-          {folders.map(folder => {
-            return (
-              <div key={folder.id_folders}>
-                <h3>{folder.name}</h3>
-                {folder.name === 'Default' ? 
-                <div className = "col-md">
-                  <button onClick = {(e) => setCollapse(!isCollapse)} className = "btn btn-success">View Items</button>
-                </div>
-                :
-                <div className = "row">
-                  <div className = "col-md">
-                    <button className = "btn btn-primary" onClick  = {() => editBtn(folder)}>Update</button>
-                  </div>
-                  <div className = "col-md">
-                    <button onClick = {() => setCollapse(!isCollapse)} className = "btn btn-success">View Items</button>
-                  </div>
-                  <div className = "col-md">
-                    <button onClick = {() => deleteBtn(folder)} className = "btn btn-danger">Delete</button>
-                  </div>                                   
-                </div>
-                }                               
-                {!isCollapse ?
-                  null
-                : 
-                 <>
-                  <br/>
-                  <Items folder={folder.id_folders} />
-                 </>
-                } 
-                <hr className = "hrclass"/>
-              </div>
-            )              
-          })} 
-        </div>  
-        {editFolder ? <Form folder={editFolder} updatedInformation = {updatedInformation} insertedInformation = {insertedInformation} /> : null}                            
-      </div>        
-  )*/
 }

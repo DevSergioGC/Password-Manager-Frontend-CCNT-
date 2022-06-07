@@ -29,9 +29,7 @@ function Register() {
     .then(resp => setUser(resp))
     .catch(error => console.log(error))
 
-  });
-
-  //! Password test with regular expresion: aSa2asda
+  });  
 
   const registerOptions = {
     name: { required: "Name is required" },

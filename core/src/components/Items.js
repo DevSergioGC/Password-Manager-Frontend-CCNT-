@@ -3,12 +3,15 @@ import ItemsForm from './ItemsForm';
 import {useCookies} from 'react-cookie';
 import {useState, useEffect} from 'react';
 import APIService from '../APIService';
+import Form from './Form';
 
 function Item(props) {
 
   const [items, setItems] = useState([]);   
-  const [isActive, setIsActive] = useState(false);
-  const [editFolder, setEditFolder] = useState(null); 
+  const [isActive, setIsActive] = useState(false); 
+  const [create, setCreate] = useState(false);
+  const [iscreate, setIsCreate] = useState(false);
+  const [isDefault, setIsDefault] = useState(false);  
   const[token] = useCookies(['mytoken']);  
 
   useEffect(() =>{
@@ -23,75 +26,47 @@ function Item(props) {
     .then(resp => setItems(resp))
     .catch(error => console.log(error))
 
-  }, [items]);  
+  }, [items]);
 
-  const editBtn = (folder) => {
-
-    setEditFolder(folder)
-  
-  }
-
-  const updatedInformation = (folder) => {      
-
-    return folder    
-
-  }
-
-  const folderForm = () => {
-
-    setEditFolder({name:''})
-
-  }
-
-  const insertedInformation = (folder) => {
-
-    const new_folder = [...folders, folder]
-    setFolders(new_folder)
-
-  }
-
-  const DeleteBtn = (folder) => {
-
-    return false
-      
-  }
-
-  const deleteBtn = (folder) => {
-
-    APIService.Delete(folder.id_folders, token['mytoken'], "folder")
-    .then(() => DeleteBtn(folder))    
-    .catch(error => console.log(error))  
-
-  }
-  
   return (
     
     <div className="accordion-item">
-        <div className="accordion-title">
+        <div className="">
           <div>
             <h4>{props.folder.name}</h4>            
-          </div>  
+          </div>         
           <div>
-            {props.folder.name === 'Default' ? 
-              null
+            {props.folder.name === 'Default' ?             
+              <div className="col">
+                <button className="btn btn-primary" onClick = {() => {setCreate(!create); () => setIsDefault(true);}}>Create</button>            
+              </div>
               :
-              <div className = "row">
-                <div className = "col-md">
-                  <button className = "btn btn-primary" onClick  = {() => editBtn(props.folder)}>Update</button>
-                </div>                    
-                <div className = "col-md">
-                  <button onClick = {() => deleteBtn(props.folder)} className = "btn btn-danger">Delete</button>
-                </div> 
-                                                  
-              </div>              
-            }          
+              () => setIsDefault(false)                       
+            }  
+            <br/>
+            <Form folder={props.folder} create={create} setCreate={setCreate} isDefault={isDefault} />         
             <br/>  
           </div>
-          <div className="row">            
+          <div className="row">           
             <div className="col">
-              <button className = "btn btn-secondary" onClick = {() => setIsActive(!isActive)}>View Items</button>
+              <button className="btn btn-primary" onClick = {() => setIsCreate(!iscreate)}>Create</button>            
             </div>
-          </div>          
+            <div className="col">
+              <button className = "btn btn-primary" onClick = {() => setIsActive(!isActive)}>View Items</button>
+            </div>
+          </div> 
+          {
+            iscreate ?
+            <>
+              <br/>
+              <div className = "card-body">
+                <ItemsForm iscreate={iscreate} setIsCreate = {setIsCreate} />
+              </div>
+              <br/>
+            </>
+            :
+            null
+          }         
         </div>    
         <br/>        
         {isActive && <div className="card-body">                
@@ -106,9 +81,12 @@ function Item(props) {
                 <br/>                    
                 <div className="card-body">
                   <ItemsForm 
-                    folder={props.folder.id_folders} 
+                    folder_id={props.folder.id_folders} 
                     item={item}  
-                    isActive = {isActive}                  
+                    isActive = {isActive} 
+                    setIsActive = {setIsActive}
+                    iscreate={iscreate}
+                    setIsCreate = {setIsCreate}                 
                   />
                 </div>  
                 <br/>

@@ -4,7 +4,7 @@ import APIService from '../APIService';
 import {useCookies} from 'react-cookie';
 import {useNavigate} from 'react-router-dom';
 
-function ItemsForm({item, isActive}) {       
+function ItemsForm({item, isActive, folder_id, iscreate, setIsCreate, setIsActive}) {       
 
     const { register, handleSubmit, formState: { errors } } = useForm();  
     const[token] = useCookies(['mytoken']); 
@@ -43,7 +43,7 @@ function ItemsForm({item, isActive}) {
     
     const deleteBtn = (item) => {
     
-        APIService.Delete(item.id_item, token['mytoken'], "item")           
+        APIService.Delete(item.id_item, token['mytoken'], "item", folder_id)           
         .catch(error => console.log(error));  
     
     }
@@ -60,6 +60,7 @@ function ItemsForm({item, isActive}) {
         .then(resp => insertedInformation(resp));
 
         setShowItemForm(!showItemForm)
+        setIsCreate(!iscreate)
 
     }
 
@@ -68,31 +69,57 @@ function ItemsForm({item, isActive}) {
         APIService.Update(item.id_item, {
             'name': data.name,
             'password': data.password,            
-            'description': () => {{
-                if(data.description === ""){                    
-                    return data.description
-                }else{
-                    return item.description
-                }
-            }},
-            'url': data.url ? data.url : item.url,
+            'description': data.description,
+            'url': data.url,
             'folder': data.folder,
         }, token['mytoken'], "item");        
 
         setShowItemForm(!showItemForm)
     }
 
-    const handleRegistration = (data) => {
+    const handleRegistration = (data) => {       
+        
+        data.password = data.password === "" ? generarString(20) : data.password
+        data.description = (data.description === "" ? item.description : data.description)
+        data.url = (data.url === "" ? item.url : data.url)
 
-        //? Function calling APIService to insert/update items
+        isEditable ? updateItem(data) : InsertItem(data)
 
-        console.log(data)
+        setIsActive(true);
 
-       /* props.isEditable ? 
-        updateItem(data)
-        :
-        InsertItem(data)*/
+    };
 
+    const generarString = (longitud) => {
+
+        let result = "";
+        const abc = "a b c d e f g h i j k l m n o p q r s t u v w x y z ! @ # $ % &".split(" "); // Espacios para convertir cara letra a un elemento de un array
+        for(let i=1;i<=longitud;i++) {
+          if (abc[i]) { // Condicional para prevenir errores en caso de que longitud sea mayor a 26
+            const random = Math.floor(Math.random() * 4); // Generaremos el número
+            const random2 = Math.floor(Math.random() * abc.length); // Generaremos el número
+            const random3 = Math.floor(Math.random() * abc.length + 3); // Generaremos el número
+            if (random == 1) {
+              result += abc[random2]
+            } else if (random == 2) {
+              result += random3 + abc[random2]
+            } else {
+              result += abc[random2].toUpperCase()
+            }
+          }
+        }
+    
+        let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
+    
+        if(regex.test(result)){
+    
+          return result;
+    
+        }else{
+    
+          generarString(longitud);
+    
+        }
+        
     };
 
     const registerOptions = {
@@ -125,23 +152,22 @@ function ItemsForm({item, isActive}) {
 
     return (
         <div className="accordion-item">
-            <div className="accordion-title">
-                <br/>
-                <div className="row">
-                    <div className="col">
-                        <button className = "btn btn-primary" onClick = {() => {
-                            setShowItemForm(!showItemForm);
-                            setIsEditable(!isEditable);                   
-                        }}>Update</button>
-                    </div>
-                <br/>
-                <div className="col">
-                  <button className = "btn btn-danger" onClick = {() => deleteBtn(item)}>Delete</button>
-                </div>
-              </div> 
-              <br/>           
-          </div>
-          {showItemForm && <div className="accordion-content">
+            <div className="card-body">
+                <div className="btn-group" role="group" aria-label="Basic example">
+                    <button className = "btn btn-success" onClick = {() => {
+                        setShowItemForm(!showItemForm);
+                        setIsEditable(false);
+                        setIsCreate(!iscreate);
+                    }}>Create</button>
+                    <button className = "btn btn-primary" onClick = {() => {
+                        setShowItemForm(!showItemForm);
+                        setIsEditable(true);   
+                        setIsCreate(!iscreate);                
+                    }}>Update</button>
+                    <button className = "btn btn-danger" onClick = {() => deleteBtn(item)}>Delete</button>
+                </div>                         
+            </div>
+          {(showItemForm || iscreate) && <div className="accordion-content">
           <div className="container">
             <form onSubmit={handleSubmit(handleRegistration, handleError)}>
                 <div className="row">
@@ -161,7 +187,7 @@ function ItemsForm({item, isActive}) {
                         <input
                         className="form-control" 
                         name="password" 
-                        type="password" 
+                        type="password"                       
                         {...register('password', registerOptions.password) }
                         />
                         <label className="text-danger">{errors?.password && errors.password.message}</label>
@@ -213,79 +239,8 @@ function ItemsForm({item, isActive}) {
         </div>
             </div>}
         </div>
-    );
+    );   
     
-    /*return (
-        <div className="container">
-            <form onSubmit={handleSubmit(handleRegistration, handleError)}>
-                <div className="row">
-                    <div className="mb-3 col">
-                        <label htmlFor="name" className="form-label">Name:</label>
-                        <input
-                        className="form-control" 
-                        name="name" 
-                        type="text" 
-                        placeholder= {props.isEditable ? props.item.name : ""}
-                        {...register('name', registerOptions.name) }
-                        />
-                        <label className="text-danger">{errors?.name && errors.name.message}</label>
-                    </div>
-                    <div className="mb-3 col">
-                        <label htmlFor="password" className="form-label">Password:</label>
-                        <input
-                        className="form-control" 
-                        name="password" 
-                        type="password" 
-                        {...register('password', registerOptions.password) }
-                        />
-                        <label className="text-danger">{errors?.password && errors.password.message}</label>
-                    </div>
-                    <div className="mb-3 col">
-                        <label htmlFor="description" className="form-label">Description:</label>
-                        <textarea
-                        className="form-control" 
-                        name="description"                          
-                        rows = "2"
-                        placeholder= {props.isEditable ? props.item.description : ""}
-                        {...register('description', registerOptions.description) }
-                        />
-                        <label className="text-danger">{errors?.description && errors.description.message}</label>
-                    </div>
-                    <div className="mb-3 col">
-                        <label htmlFor="url" className="form-label">Site URL:</label>
-                        <input
-                        className="form-control"                        
-                        name="url" 
-                        type="text" 
-                        placeholder= {props.isEditable ? props.item.url : "www.example.com"}
-                        {...register('url', registerOptions.url) }
-                        />
-                        <label className="text-danger">{errors?.url && errors.url.message}</label>
-                    </div>
-                    <div className="mb-3 col">
-                        <label htmlFor="id_folder" className="form-label">Folder:</label>
-                        <select className="form-select" {...register('folder', registerOptions.folder) }>                            
-                            {folder ?
-                                folder.map(fol => {
-                                    return (
-                                        <option value={fol.id_folders}>{fol.name}</option>
-                                    )
-                                })
-                            :
-                                null
-                            }
-                        </select>
-                        <label className="text-danger">{errors?.id_folder && errors.id_folder.message}</label>
-                    </div>
-                    {props.isEditable ?
-                        <button className="btn btn-primary">Update</button>
-                    :
-                        <button className="btn btn-primary">Create</button>
-                    }
-                </div>
-            </form>
-        </div>
-    )*/
 }
 
 export default ItemsForm

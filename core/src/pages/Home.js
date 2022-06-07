@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React from 'react';
 import {useEffect} from 'react';
 import {useCookies} from 'react-cookie';
 import {useNavigate} from 'react-router-dom';
@@ -6,17 +6,16 @@ import {useNavigate} from 'react-router-dom';
 function Home() {
 
   const[token] = useCookies(['mytoken']);  
-  let navigate = useNavigate();     
-  const[isCollapse, setCollapse] = useState(false);
+  let navigate = useNavigate();  
 
   useEffect(() => {
 
-    if(!token) {
+    if(token['mytoken'] === 'undefined') {
 
       navigate('/login')        
        
     }
-  }, [token])    
+  }, [token]); 
 
   return (   
         

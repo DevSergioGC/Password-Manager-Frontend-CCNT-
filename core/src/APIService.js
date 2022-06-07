@@ -2,7 +2,7 @@ import {useCookies} from 'react-cookie';
 
 export default class APIService {
 
-    static Update(id, body, token, model){
+    static Update(id, body, token, model){        
 
         return fetch(`http://127.0.0.1:8000/api/${model}/${id}/`, {
             'method': 'PUT',
@@ -30,16 +30,31 @@ export default class APIService {
 
     }
 
-    static Delete(id, token, model){
+    static Delete(id, token, model, folder){
 
-        return fetch(`http://127.0.0.1:8000/api/${model}/${id}`, {
-            'method': 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`
-            }
+        if(model === 'item'){
 
-        })
+            return fetch(`http://127.0.0.1:8000/api/${model}/${id}/?folder=${encodeURIComponent(folder)}`, {
+                'method': 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`
+                }
+
+            })
+
+        }else{
+
+            return fetch(`http://127.0.0.1:8000/api/${model}/${id}/`, {
+                'method': 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`
+                }
+
+            })
+
+        }
 
     }    
 
