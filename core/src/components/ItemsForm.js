@@ -4,12 +4,14 @@ import APIService from '../APIService';
 import {useCookies} from 'react-cookie';
 import {useNavigate} from 'react-router-dom';
 
-function ItemsForm({item, isActive, folder_id, iscreate, setIsCreate, setIsActive}) {       
+function ItemsForm({item, isActive, folder_id, setIsActive}) {       
 
     const { register, handleSubmit, formState: { errors } } = useForm();  
     const[token] = useCookies(['mytoken']); 
-    const[isEditable, setIsEditable] = useState(false);    
-    const[showItemForm, setShowItemForm] = useState(false);       
+    const[isEditable, setIsEditable] = useState(false);  
+    const[randomPassword, setPassword] = useState(null)  
+    const[showItemForm, setShowItemForm] = useState(false); 
+    const[isChecked, setIsChecked] = useState(false)      
     const handleError = (errors) => {};
     let navigate = useNavigate();
 
@@ -85,7 +87,7 @@ function ItemsForm({item, isActive, folder_id, iscreate, setIsCreate, setIsActiv
 
         isEditable ? updateItem(data) : InsertItem(data)
 
-        setIsActive(true);
+        setIsActive(true);        
 
     };
 
@@ -147,7 +149,7 @@ function ItemsForm({item, isActive, folder_id, iscreate, setIsCreate, setIsActiv
                 message: "Url must be like 'wwww.example.com' | 'example.com'"
             }
         },
-        folder: {required: "You must select one folder"}
+        folder: {required: "You must select one folder"},
     }
 
     return (
@@ -156,18 +158,16 @@ function ItemsForm({item, isActive, folder_id, iscreate, setIsCreate, setIsActiv
                 <div className="btn-group" role="group" aria-label="Basic example">
                     <button className = "btn btn-success" onClick = {() => {
                         setShowItemForm(!showItemForm);
-                        setIsEditable(false);
-                        setIsCreate(!iscreate);
-                    }}>Create</button>
+                        setIsEditable(false);                        
+                    }}>Create Item</button>
                     <button className = "btn btn-primary" onClick = {() => {
                         setShowItemForm(!showItemForm);
-                        setIsEditable(true);   
-                        setIsCreate(!iscreate);                
+                        setIsEditable(true);                                       
                     }}>Update</button>
                     <button className = "btn btn-danger" onClick = {() => deleteBtn(item)}>Delete</button>
                 </div>                         
             </div>
-          {(showItemForm || iscreate) && <div className="accordion-content">
+          {(showItemForm) && <div className="accordion-content">
           <div className="container">
             <form onSubmit={handleSubmit(handleRegistration, handleError)}>
                 <div className="row">
@@ -187,17 +187,36 @@ function ItemsForm({item, isActive, folder_id, iscreate, setIsCreate, setIsActiv
                         <input
                         className="form-control" 
                         name="password" 
-                        type="password"                       
+                        type="password" 
+                        value={isChecked ? randomPassword : null}                      
                         {...register('password', registerOptions.password) }
                         />
                         <label className="text-danger">{errors?.password && errors.password.message}</label>
-                    </div>
+                    </div> 
+                    <div className="mb-3 col">
+                        <div class="form-check">
+                            <input 
+                            className="form-check-input" 
+                            type="checkbox" 
+                            value="" 
+                            id="flexCheckChecked"
+                            onClick={ () => {
+                                setIsChecked(!isChecked);
+                                setPassword(generarString(20));
+                            } }                            
+                            />
+                            <label className="form-check-label" for="flexCheckChecked">
+                                Generate Password
+                            </label>
+                        </div>
+                    </div>                  
                     <div className="mb-3 col">
                         <label htmlFor="description" className="form-label">Description:</label>
                         <textarea
                         className="form-control" 
                         name="description"                          
                         rows = "2"
+                       
                         placeholder= {isEditable ? item.description : ""}
                         {...register('description', registerOptions.description) }
                         />
@@ -228,13 +247,13 @@ function ItemsForm({item, isActive, folder_id, iscreate, setIsCreate, setIsActiv
                             }
                         </select>
                         <label className="text-danger">{errors?.id_folder && errors.id_folder.message}</label>
-                    </div>
+                    </div>                    
                     {isEditable ?
                         <button className="btn btn-primary">Update</button>
                     :
                         <button className="btn btn-primary">Create</button>
                     }
-                </div>
+                </div>                
             </form>
         </div>
             </div>}

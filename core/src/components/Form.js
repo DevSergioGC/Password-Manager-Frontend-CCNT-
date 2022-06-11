@@ -61,7 +61,7 @@ function Form({ folder, create, setCreate, isDefault }) {
 
   const deleteBtn = (folder) => {
 
-    APIService.Delete(id=folder.id_folders, token=token['mytoken'], model="folder")
+    APIService.Delete(folder.id_folders, token['mytoken'], "folder")
     .then(() => setIsActive(false))    
     .catch(error => console.log(error));  
 
@@ -78,7 +78,7 @@ function Form({ folder, create, setCreate, isDefault }) {
             setIsActive(!isActive);
             setCreate(!create)
             setIsEditable(false);
-          }}>Create</button>
+          }}>Create Folder</button>
           <button className="btn btn-secondary" onClick={() => {
             setIsActive(!isActive);
             setCreate(!create)
