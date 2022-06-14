@@ -33,7 +33,7 @@ export default function Folder() {
           <div className="accordion-item">
             {folders.map(folder => ( 
 
-              <div key="{folder.id_folders}">
+              <div>
                 <Items 
                   folder={folder}                 
                 />
