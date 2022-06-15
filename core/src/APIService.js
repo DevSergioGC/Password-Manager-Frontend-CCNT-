@@ -30,31 +30,16 @@ export default class APIService {
 
     }
 
-    static Delete(id, token, model, folder){
+    static Delete(id, token, model){
 
-        if(model === 'item'){
+        return fetch(`http://127.0.0.1:8000/api/${model}/${id}/`, {
+            'method': 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            }
 
-            return fetch(`http://127.0.0.1:8000/api/${model}/${id}/?folder=${encodeURIComponent(folder)}`, {
-                'method': 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`
-                }
-
-            })
-
-        }else{
-
-            return fetch(`http://127.0.0.1:8000/api/${model}/${id}/`, {
-                'method': 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`
-                }
-
-            })
-
-        }
+        })
 
     }    
 
