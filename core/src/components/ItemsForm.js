@@ -34,14 +34,7 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
         if(!isActive){
             setShowItemForm(false);
         }
-    }, [isActive]);        
-    
-    const insertedInformation = (item) => {
-    
-        const new_item = [...items, item]
-        setItems(new_item)
-    
-    }  
+    }, [isActive]);   
     
     const deleteBtn = (item) => {
     
@@ -58,11 +51,10 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
             'description': data.description,
             'url': data.url,
             'folder': data.folder,
-        }, token, "item")
-        .then(resp => insertedInformation(resp));
+        }, token, "item");        
 
-        setShowItemForm(!showItemForm)
-        setIsCreate(!iscreate)
+        setShowItemForm(!showItemForm);
+        setIsCreate(!iscreate);
 
     }
 
@@ -81,7 +73,7 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
 
     const handleRegistration = (data) => {       
         
-        data.password = data.password === "" ? generarString(20) : data.password
+        data.password = data.password === "" ? item.password : data.password
         data.description = (data.description === "" ? item.description : data.description)
         data.url = (data.url === "" ? item.url : data.url)
 

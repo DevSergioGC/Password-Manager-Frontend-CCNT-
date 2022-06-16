@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { useForm } from "react-hook-form";
 import {useNavigate} from 'react-router-dom';
 import APIService from '../APIService';
@@ -7,6 +7,8 @@ function Register() {
 
   const { register, handleSubmit, formState: { errors }, watch } = useForm();  
   const handleError = (errors) => {};
+  const [user, setUser] = useState([]);
+  const[usernamed, setUsername] = useState(null);
   let navigate = useNavigate()
 
   const handleRegistration = (data) => {
@@ -17,7 +19,7 @@ function Register() {
 
   }; 
 
-  const [user, setUser] = useState(()=>{
+  useEffect(() =>{
 
     fetch('http://127.0.0.1:8000/api/user/', {
       'method': 'GET',
@@ -27,21 +29,24 @@ function Register() {
     })
     .then(resp => resp.json())
     .then(resp => setUser(resp))
-    .catch(error => console.log(error))
-
-  });  
+    .catch(error => console.log(error))      
+  
+  }, [user]);    
 
   const registerOptions = {
     name: { required: "Name is required" },
     username: { 
       required: "username is required",
-      validate: value => {
-        user.map(users => {                  
-          if(value === users.username){                        
-            return "This username is taken"
+      validate: async (value) => {
+        user.map(users => {
+          if(users.username === value){
+            setUsername(users.username);
           }
-        })
-      } 
+        }) 
+        
+        return value != usernamed || "Username already taken"       
+        
+      }
     },
     password: {
       required: "Password is required",
