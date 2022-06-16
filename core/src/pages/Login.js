@@ -27,7 +27,7 @@ function Login() {
 
         }
 
-    }, Cookies.get('mytoken'))
+    }, [Cookies.get('mytoken')])
 
     const registerOptions = {               
         username: { 
