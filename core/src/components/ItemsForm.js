@@ -170,14 +170,14 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
           {(showItemForm) && <div className="accordion-content">
           <div className="container">
             <form onSubmit={handleSubmit(handleRegistration, handleError)}>
-                <div className="row">
+                <div className="col">
                     <div className="mb-3 col">
                         <label htmlFor="name" className="form-label">Name:</label>
                         <input
                         className="form-control" 
                         name="name" 
                         type="text" 
-                        placeholder= {isEditable ? item.name : ""}
+                        placeholder= {isEditable ? item.name : null}
                         {...register('name', registerOptions.name) }
                         />
                         <label className="text-danger">{errors?.name && errors.name.message}</label>
@@ -194,11 +194,10 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
                         <label className="text-danger">{errors?.password && errors.password.message}</label>
                     </div> 
                     <div className="mb-3 col">
-                        <div class="form-check">
+                        <div className="form-check">
                             <input 
                             className="form-check-input" 
-                            type="checkbox" 
-                            value="" 
+                            type="checkbox"                           
                             id="flexCheckChecked"
                             onClick={ () => {
                                 setIsChecked(!isChecked);
@@ -215,9 +214,8 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
                         <textarea
                         className="form-control" 
                         name="description"                          
-                        rows = "2"
-                       
-                        placeholder= {isEditable ? item.description : ""}
+                        rows = "4"                       
+                        placeholder= {isEditable ? item.description : null}
                         {...register('description', registerOptions.description) }
                         />
                         <label className="text-danger">{errors?.description && errors.description.message}</label>

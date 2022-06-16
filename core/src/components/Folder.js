@@ -7,7 +7,7 @@ import Items from './Items';
 
 export default function Folder() {
 
-  const [folders, setFolders] = useState([]);    
+  const [folders, setFolders] = useState([]); 
   const[token] = useCookies(['mytoken']); 
 
   useEffect(() =>{
@@ -25,25 +25,23 @@ export default function Folder() {
   
   }, [folders]); 
 
-  return (
-    <div className="container">
-      <h1 className="title">Folders</h1>
-      <div className="">
-        <div className="accordion">
-          <div className="accordion-item">
-            {folders.map(folder => ( 
+  return(
 
-              <div key="{folder.id_folders}">
-                <Items 
-                  folder={folder}                 
-                />
-              </div>                      
-                           
-            ))}
-          </div>
+    <div className="container-md">
+      <h1>Folders</h1>
+      <div className="container">
+        <div className="row g-2">            
+          {folders.map(folder => (             
+
+            <div className="col-6" key={folder.id_folders}>              
+              <div className="p-3 "> <Items folder={folder} /> </div>
+            </div>                               
+                        
+          ))}        
         </div>
       </div>
-    </div>
-  ) 
-  
+    </div>   
+
+  )
+
 }
