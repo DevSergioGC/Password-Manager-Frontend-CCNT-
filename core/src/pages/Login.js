@@ -1,33 +1,33 @@
 import React, {useState, useEffect, createContext} from "react";
 import APIService from '../APIService';
 import { useForm } from "react-hook-form";
-import {useCookies} from 'react-cookie';
 import {useNavigate} from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 function Login() {      
 
     const { register, handleSubmit, formState: { errors } } = useForm();  
-    const handleError = (errors) => {};
-    const[token, setToken] = useCookies(['mytoken']);       
+    const handleError = (errors) => {};           
     let navigate = useNavigate();
 
     const handleRegistration = (data) => {
 
         APIService.LoginUser(data)
-        .then(resp => setToken('mytoken', resp.token))
+        .then(resp => Cookies.set('mytoken', resp.token, { expires: 1 }))
         .catch(error => console.log(error));    
+        window.location.reload(true);
     
     };
 
     useEffect(() =>{
 
-        if (token['mytoken']){            
+        if (Cookies.get('mytoken')){            
             
             navigate('/');
 
         }
 
-    }, [token])
+    }, Cookies.get('mytoken'))
 
     const registerOptions = {               
         username: { 

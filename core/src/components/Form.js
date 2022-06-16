@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import { useForm } from "react-hook-form";
 import APIService from '../APIService';
-import {useCookies} from 'react-cookie';
+import Cookies from 'js-cookie';
 
 function Form({ folder, create, setCreate, isDefault }) {
     
-  const[token] = useCookies(['mytoken']);
+  const token = Cookies.get('mytoken');
   const [isActive, setIsActive] = useState(false);
   const[isEditable, setIsEditable] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();  
@@ -31,13 +31,13 @@ function Form({ folder, create, setCreate, isDefault }) {
 
   const updateFolder = (data) => {
     
-    APIService.Update(folder.id_folders, {'name': data.name}, token['mytoken'], "folder")    
+    APIService.Update(folder.id_folders, {'name': data.name}, token, "folder")    
 
   }
 
   const insertFolder = (data) => {      
 
-    APIService.Insert({'name': data.name}, token['mytoken'], "folder")    
+    APIService.Insert({'name': data.name}, token, "folder")    
 
   }  
 
@@ -49,7 +49,7 @@ function Form({ folder, create, setCreate, isDefault }) {
 
   const deleteBtn = (folder) => {
 
-    APIService.Delete(folder.id_folders, token['mytoken'], "folder")
+    APIService.Delete(folder.id_folders, token, "folder")
     .then(() => setIsActive(false))    
     .catch(error => console.log(error));  
 

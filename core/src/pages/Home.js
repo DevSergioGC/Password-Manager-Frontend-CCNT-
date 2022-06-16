@@ -1,16 +1,16 @@
 import React from 'react';
 import {useEffect} from 'react';
-import {useCookies} from 'react-cookie';
 import {useNavigate} from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 function Home() {
 
-  const[token] = useCookies(['mytoken']);  
+  const token = Cookies.get('mytoken'); 
   let navigate = useNavigate();  
 
   useEffect(() => {
 
-    if(token['mytoken'] === 'undefined') {
+    if(!token) {
 
       navigate('/login')        
        

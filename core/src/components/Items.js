@@ -1,22 +1,33 @@
 import React from 'react';
 import ItemsForm from './ItemsForm';
-import {useCookies} from 'react-cookie';
 import {useState, useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
 import Form from './Form';
+import Cookies from 'js-cookie';
 
 function Item(props) {
 
   const [items, setItems] = useState([]);   
   const [isActive, setIsActive] = useState(false); 
   const [create, setCreate] = useState(false);     
-  const[token] = useCookies(['mytoken']);  
+  const token = Cookies.get('mytoken');
+  let navigate = useNavigate();  
+
+  useEffect(() => {
+
+    if(!token) {
+
+      navigate('/login')        
+       
+    }
+  }, [token]);
 
   useEffect(() =>{
     fetch(`http://127.0.0.1:8000/api/item/?folder=${encodeURIComponent(props.folder.id_folders)}`, {
       'method': 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Token ${token['mytoken']}`
+        'Authorization': `Token ${token}`
       }
     })
     .then(resp => resp.json())

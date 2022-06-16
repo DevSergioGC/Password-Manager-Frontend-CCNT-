@@ -1,14 +1,23 @@
-import React from 'react'
-import Form from './Form'
-import {useState, useEffect, useContext} from 'react';
-import {useCookies} from 'react-cookie';
-import APIService from '../APIService';
+import React from 'react';
+import {useState, useEffect} from 'react';
 import Items from './Items';
+import Cookies from 'js-cookie';
+import {useNavigate} from 'react-router-dom';
 
 export default function Folder() {
 
   const [folders, setFolders] = useState([]); 
-  const[token] = useCookies(['mytoken']); 
+  const token = Cookies.get('mytoken');
+  let navigate = useNavigate();  
+
+  useEffect(() => {
+
+    if(!token) {
+
+      navigate('/login')        
+       
+    }
+  }, [token]);
 
   useEffect(() =>{
 
@@ -16,7 +25,7 @@ export default function Folder() {
       'method': 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Token ${token['mytoken']}`
+        'Authorization': `Token ${token}`
       }
     })
     .then(resp => resp.json())

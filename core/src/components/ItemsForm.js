@@ -1,13 +1,13 @@
 import React, {useState, useEffect, useContext} from 'react'
 import { useForm } from "react-hook-form";
 import APIService from '../APIService';
-import {useCookies} from 'react-cookie';
 import {useNavigate} from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 function ItemsForm({item, isActive, folder_id, setIsActive}) {       
 
     const { register, handleSubmit, formState: { errors } } = useForm();  
-    const[token] = useCookies(['mytoken']); 
+    const token = Cookies.get('mytoken');
     const[isEditable, setIsEditable] = useState(false);  
     const[randomPassword, setPassword] = useState(null)  
     const[showItemForm, setShowItemForm] = useState(false); 
@@ -21,7 +21,7 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
         'method': 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Token ${token['mytoken']}`
+          'Authorization': `Token ${token}`
         }
       })
       .then(resp => resp.json())
@@ -45,7 +45,7 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
     
     const deleteBtn = (item) => {
     
-        APIService.Delete(item.id_item, token['mytoken'], "item", folder_id)           
+        APIService.Delete(item.id_item, token, "item", folder_id)           
         .catch(error => console.log(error));  
     
     }
@@ -58,7 +58,7 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
             'description': data.description,
             'url': data.url,
             'folder': data.folder,
-        }, token['mytoken'], "item")
+        }, token, "item")
         .then(resp => insertedInformation(resp));
 
         setShowItemForm(!showItemForm)
@@ -74,7 +74,7 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
             'description': data.description,
             'url': data.url,
             'folder': data.folder,
-        }, token['mytoken'], "item");        
+        }, token, "item");        
 
         setShowItemForm(!showItemForm)
     }
