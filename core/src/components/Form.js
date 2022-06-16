@@ -1,14 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import { useForm } from "react-hook-form";
 import APIService from '../APIService';
-import {useCookies} from 'react-cookie';
+import Cookies from 'js-cookie';
 
 function Form({ folder, create, setCreate, isDefault }) {
-
-  //! Add to body the user id
-
-  //const [name, setName] = useState('')
-  const[token] = useCookies(['mytoken']);
+    
+  const token = Cookies.get('mytoken');
   const [isActive, setIsActive] = useState(false);
   const[isEditable, setIsEditable] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();  
@@ -16,27 +13,31 @@ function Form({ folder, create, setCreate, isDefault }) {
 
   const handleRegistration = (data) => {
 
-    isEditable ? 
+    if(isEditable){
 
-      updateFolder(data)
+      updateFolder(data);
+      setCreate(!create);
+      setIsActive(!isActive);
 
-    :
+    }else{
 
-      insertFolder(data)      
+      insertFolder(data);
+      setCreate(!create);
+      setIsActive(!isActive);
+
+    }
 
   };
 
   const updateFolder = (data) => {
     
-    APIService.Update(folder.id_folders, {'name': data.name}, token['mytoken'], "folder")
-    .then(resp => updatedInformation(resp))
+    APIService.Update(folder.id_folders, {'name': data.name}, token, "folder")    
 
   }
 
-  const insertFolder = (data) => {    
+  const insertFolder = (data) => {      
 
-    APIService.Insert({'name': data.name}, token['mytoken'], "folder")
-    .then(resp => insertedInformation(resp))
+    APIService.Insert({'name': data.name}, token, "folder")    
 
   }  
 
@@ -44,24 +45,11 @@ function Form({ folder, create, setCreate, isDefault }) {
 
     name: { required: "Name is required" },    
 
-  }  
-
-  const updatedInformation = (folder) => {      
-
-    return folder    
-
-  }  
-
-  const insertedInformation = (folder) => {
-
-    const new_folder = [...folders, folder]
-    setFolders(new_folder)
-
-  }
+  }    
 
   const deleteBtn = (folder) => {
 
-    APIService.Delete(folder.id_folders, token['mytoken'], "folder")
+    APIService.Delete(folder.id_folders, token, "folder")
     .then(() => setIsActive(false))    
     .catch(error => console.log(error));  
 
@@ -71,7 +59,13 @@ function Form({ folder, create, setCreate, isDefault }) {
 
     <div className="container">
       {isDefault ?
-        null
+        <div className="btn-group" role="group" aria-label="Basic example">
+          <button className="btn btn-secondary" onClick={() => {
+            setIsActive(!isActive);
+            setCreate(!create)
+            setIsEditable(false);
+          }}>Create Folder</button>       
+        </div>
         :
         <div className="btn-group" role="group" aria-label="Basic example">
           <button className="btn btn-secondary" onClick={() => {

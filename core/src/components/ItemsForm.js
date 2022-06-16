@@ -1,13 +1,13 @@
 import React, {useState, useEffect, useContext} from 'react'
 import { useForm } from "react-hook-form";
 import APIService from '../APIService';
-import {useCookies} from 'react-cookie';
 import {useNavigate} from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 function ItemsForm({item, isActive, folder_id, setIsActive}) {       
 
     const { register, handleSubmit, formState: { errors } } = useForm();  
-    const[token] = useCookies(['mytoken']); 
+    const token = Cookies.get('mytoken');
     const[isEditable, setIsEditable] = useState(false);  
     const[randomPassword, setPassword] = useState(null)  
     const[showItemForm, setShowItemForm] = useState(false); 
@@ -21,7 +21,7 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
         'method': 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Token ${token['mytoken']}`
+          'Authorization': `Token ${token}`
         }
       })
       .then(resp => resp.json())
@@ -34,18 +34,11 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
         if(!isActive){
             setShowItemForm(false);
         }
-    }, [isActive]);        
-    
-    const insertedInformation = (item) => {
-    
-        const new_item = [...items, item]
-        setItems(new_item)
-    
-    }  
+    }, [isActive]);   
     
     const deleteBtn = (item) => {
     
-        APIService.Delete(item.id_item, token['mytoken'], "item", folder_id)           
+        APIService.Delete(item.id_item, token, "item", folder_id)           
         .catch(error => console.log(error));  
     
     }
@@ -58,11 +51,10 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
             'description': data.description,
             'url': data.url,
             'folder': data.folder,
-        }, token['mytoken'], "item")
-        .then(resp => insertedInformation(resp));
+        }, token, "item");        
 
-        setShowItemForm(!showItemForm)
-        setIsCreate(!iscreate)
+        setShowItemForm(!showItemForm);
+        setIsCreate(!iscreate);
 
     }
 
@@ -74,14 +66,14 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
             'description': data.description,
             'url': data.url,
             'folder': data.folder,
-        }, token['mytoken'], "item");        
+        }, token, "item");        
 
         setShowItemForm(!showItemForm)
     }
 
     const handleRegistration = (data) => {       
         
-        data.password = data.password === "" ? generarString(20) : data.password
+        data.password = data.password === "" ? item.password : data.password
         data.description = (data.description === "" ? item.description : data.description)
         data.url = (data.url === "" ? item.url : data.url)
 
@@ -170,14 +162,14 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
           {(showItemForm) && <div className="accordion-content">
           <div className="container">
             <form onSubmit={handleSubmit(handleRegistration, handleError)}>
-                <div className="row">
+                <div className="col">
                     <div className="mb-3 col">
                         <label htmlFor="name" className="form-label">Name:</label>
                         <input
                         className="form-control" 
                         name="name" 
                         type="text" 
-                        placeholder= {isEditable ? item.name : ""}
+                        placeholder= {isEditable ? item.name : null}
                         {...register('name', registerOptions.name) }
                         />
                         <label className="text-danger">{errors?.name && errors.name.message}</label>
@@ -194,11 +186,10 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
                         <label className="text-danger">{errors?.password && errors.password.message}</label>
                     </div> 
                     <div className="mb-3 col">
-                        <div class="form-check">
+                        <div className="form-check">
                             <input 
                             className="form-check-input" 
-                            type="checkbox" 
-                            value="" 
+                            type="checkbox"                           
                             id="flexCheckChecked"
                             onClick={ () => {
                                 setIsChecked(!isChecked);
@@ -215,9 +206,8 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
                         <textarea
                         className="form-control" 
                         name="description"                          
-                        rows = "2"
-                       
-                        placeholder= {isEditable ? item.description : ""}
+                        rows = "4"                       
+                        placeholder= {isEditable ? item.description : null}
                         {...register('description', registerOptions.description) }
                         />
                         <label className="text-danger">{errors?.description && errors.description.message}</label>

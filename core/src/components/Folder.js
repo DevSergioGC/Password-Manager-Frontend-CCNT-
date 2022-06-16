@@ -1,14 +1,23 @@
-import React from 'react'
-import Form from './Form'
-import {useState, useEffect, useContext} from 'react';
-import {useCookies} from 'react-cookie';
-import APIService from '../APIService';
+import React from 'react';
+import {useState, useEffect} from 'react';
 import Items from './Items';
+import Cookies from 'js-cookie';
+import {useNavigate} from 'react-router-dom';
 
 export default function Folder() {
 
-  const [folders, setFolders] = useState([]);    
-  const[token] = useCookies(['mytoken']); 
+  const [folders, setFolders] = useState([]); 
+  const token = Cookies.get('mytoken');
+  let navigate = useNavigate();  
+
+  useEffect(() => {
+
+    if(!token) {
+
+      navigate('/login')        
+       
+    }
+  }, [token]);
 
   useEffect(() =>{
 
@@ -16,7 +25,7 @@ export default function Folder() {
       'method': 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Token ${token['mytoken']}`
+        'Authorization': `Token ${token}`
       }
     })
     .then(resp => resp.json())
@@ -25,25 +34,23 @@ export default function Folder() {
   
   }, [folders]); 
 
-  return (
-    <div className="container">
-      <h1 className="title">Folders</h1>
-      <div className="">
-        <div className="accordion">
-          <div className="accordion-item">
-            {folders.map(folder => ( 
+  return(
 
-              <div>
-                <Items 
-                  folder={folder}                 
-                />
-              </div>                      
-                           
-            ))}
-          </div>
+    <div className="container-md">
+      <h1>Folders</h1>
+      <div className="container">
+        <div className="row g-2">            
+          {folders.map(folder => (             
+
+            <div className="col-6" key={folder.id_folders}>              
+              <div className="p-3 "> <Items folder={folder} /> </div>
+            </div>                               
+                        
+          ))}        
         </div>
       </div>
-    </div>
-  ) 
-  
+    </div>   
+
+  )
+
 }
