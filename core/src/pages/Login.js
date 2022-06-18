@@ -31,17 +31,10 @@ function Login() {
 
     const registerOptions = {               
         username: { 
-            required: "Username is required",            
-            /*validate: value => {
-                myuser = user.filter(myuser => myuser.username === value)
-                if(!myuser){
-                    return "User not register"
-                }
-            }*/
+            required: "Username is required",          
         },
         password: {
-            required: "Password is required",
-            //! Add validate property                       
+            required: "Password is required",                                   
         }        
     }
 

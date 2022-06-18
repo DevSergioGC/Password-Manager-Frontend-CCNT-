@@ -11,6 +11,7 @@ function Item(props) {
   const [isActive, setIsActive] = useState(false); 
   const [create, setCreate] = useState(false);     
   const token = Cookies.get('mytoken');
+  const [isItem, setIsItems] = useState(false);
   let navigate = useNavigate();  
 
   useEffect(() => {
@@ -50,9 +51,9 @@ function Item(props) {
           </div>         
           <div className="row">                
             <div className="col">
-              <ItemsForm isFull={items.length > 0 ? true : false} /> 
+              <ItemsForm isFull={isItem} /> 
               <br/>
-              <button className = "btn btn-primary" onClick = {() => setIsActive(!isActive)}>View Items</button>              
+              <button className = "btn btn-primary" onClick = {() => {setIsActive(!isActive); setIsItems(!isItem)}}>View Items</button>              
             </div>
           </div>                  
         </div>    
@@ -70,7 +71,8 @@ function Item(props) {
                   folder_id={props.folder.id_folders} 
                   item={item}  
                   isActive = {isActive} 
-                  setIsActive = {setIsActive}                                    
+                  setIsActive = {setIsActive}   
+                  isFull={isItem}                                 
                 />
               </div>  
               <br/>

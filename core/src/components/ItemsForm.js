@@ -15,7 +15,9 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
     const handleError = (errors) => {};
     let navigate = useNavigate();
 
-    const [folder, setFolder] = useState(() => {
+    const [folder, setFolder] = useState([])  
+    
+    useEffect(() => {
 
         fetch('http://127.0.0.1:8000/api/folder/', {
         'method': 'GET',
@@ -26,9 +28,9 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
       })
       .then(resp => resp.json())
       .then(resp => setFolder(resp))
-      .catch(error => console.log(error))      
+      .catch(error => console.log(error))
 
-    });    
+    },[folder])
 
     useEffect(() =>{
         if(!isActive){
@@ -152,11 +154,17 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
                         setShowItemForm(!showItemForm);
                         setIsEditable(false);                        
                     }}>Create Item</button>
-                    <button className = "btn btn-primary" onClick = {() => {
-                        setShowItemForm(!showItemForm);
-                        setIsEditable(true);                                       
-                    }}>Update</button>
-                    <button className = "btn btn-danger" onClick = {() => deleteBtn(item)}>Delete</button>
+                    {isFull ?
+                        <>
+                            <button className = "btn btn-primary" onClick = {() => {
+                                setShowItemForm(!showItemForm);
+                                setIsEditable(true);                                       
+                            }}>Update</button>
+                            <button className = "btn btn-danger" onClick = {() => deleteBtn(item)}>Delete</button>
+                        </>
+                        :
+                        null
+                    }                    
                 </div>                         
             </div>
           {(showItemForm) && <div className="accordion-content">
