@@ -37,7 +37,11 @@ function Form({ folder, create, setCreate, isDefault }) {
 
   const insertFolder = (data) => {      
 
-    APIService.Insert({'name': data.name}, token, "folder")    
+    try{
+      APIService.Insert({'name': data.name}, token, "folder")  
+    } catch (err){
+      console.log(err.message)
+    }    
 
   }  
 
@@ -67,12 +71,7 @@ function Form({ folder, create, setCreate, isDefault }) {
           }}>Create Folder</button>       
         </div>
         :
-        <div className="btn-group" role="group" aria-label="Basic example">
-          <button className="btn btn-secondary" onClick={() => {
-            setIsActive(!isActive);
-            setCreate(!create)
-            setIsEditable(false);
-          }}>Create Folder</button>
+        <div className="btn-group" role="group" aria-label="Basic example">          
           <button className="btn btn-secondary" onClick={() => {
             setIsActive(!isActive);
             setCreate(!create)

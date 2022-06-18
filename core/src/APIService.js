@@ -27,6 +27,7 @@ export default class APIService {
             body:JSON.stringify(body)
 
         }).then(resp => resp.json())
+        .catch(err => console.log(err));
 
     }
 

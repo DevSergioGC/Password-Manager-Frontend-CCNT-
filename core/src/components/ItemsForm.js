@@ -4,7 +4,7 @@ import APIService from '../APIService';
 import {useNavigate} from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-function ItemsForm({item, isActive, folder_id, setIsActive}) {       
+function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {       
 
     const { register, handleSubmit, formState: { errors } } = useForm();  
     const token = Cookies.get('mytoken');
@@ -243,7 +243,8 @@ function ItemsForm({item, isActive, folder_id, setIsActive}) {
                     :
                         <button className="btn btn-primary">Create</button>
                     }
-                </div>                
+                </div>   
+                <br/>             
             </form>
         </div>
             </div>}

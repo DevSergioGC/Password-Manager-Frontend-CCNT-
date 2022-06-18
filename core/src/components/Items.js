@@ -50,7 +50,7 @@ function Item(props) {
           </div>         
           <div className="row">                
             <div className="col">
-              <ItemsForm /> 
+              <ItemsForm isFull={items.length > 0 ? true : false} /> 
               <br/>
               <button className = "btn btn-primary" onClick = {() => setIsActive(!isActive)}>View Items</button>              
             </div>

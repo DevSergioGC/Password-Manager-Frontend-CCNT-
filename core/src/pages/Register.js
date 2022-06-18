@@ -8,16 +8,16 @@ function Register() {
   const { register, handleSubmit, formState: { errors }, watch } = useForm();  
   const handleError = (errors) => {};
   const [user, setUser] = useState([]);
-  const[usernamed, setUsername] = useState(null);
-  let navigate = useNavigate()
+  const [usernamed, setUSername] = useState([]);  
+  let navigate = useNavigate(); 
 
-  const handleRegistration = (data) => {
+  const handleRegistration = (data) => {   
 
     APIService.RegisterUser({'first_name':data.name, 'username': data.username, 'password': data.password})
     .then(navigate('/login'))
     .catch(error => console.log(error))
 
-  }; 
+  };
 
   useEffect(() =>{
 
@@ -29,6 +29,7 @@ function Register() {
     })
     .then(resp => resp.json())
     .then(resp => setUser(resp))
+    .then(setUSername(user.filter(user => user.username === watch('username'))))
     .catch(error => console.log(error))      
   
   }, [user]);    
@@ -37,15 +38,10 @@ function Register() {
     name: { required: "Name is required" },
     username: { 
       required: "username is required",
-      validate: async (value) => {
-        user.map(users => {
-          if(users.username === value){
-            setUsername(users.username);
-          }
-        }) 
-        
-        return value != usernamed || "Username already taken"       
-        
+      validate: value => {
+        if(usernamed.length > 0){
+          return value != usernamed[0].username || "Username already taken. Try another!"
+        }
       }
     },
     password: {
@@ -89,7 +85,7 @@ function Register() {
             <input
               type="text"
               name="username"
-              className="form-control"
+              className="form-control"              
               {...register('username', registerOptions.username)}
             />
             <label className="text-danger">

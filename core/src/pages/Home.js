@@ -26,18 +26,7 @@ function Home() {
             <h1>Password Manager - Sergio Guzman</h1>
             <h3>SAVE ANYTHING YOU WANT</h3>             
           </div>
-      </div>  
-      <div className="accordion-item">
-            <div className="accordion-title" onClick={() => setIsActive(!isActive)}>
-                <div>
-                    <h4>Hola</h4>
-                </div>
-                <div>{isActive ? '⇑' : '⇓'}</div>
-            </div>            
-            {isActive && <div className="card">                
-                Hola                
-            </div>}            
-        </div>    
+      </div>           
     </div>
 
   )

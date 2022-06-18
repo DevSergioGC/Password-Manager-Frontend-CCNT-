@@ -46,7 +46,7 @@ function Login() {
     }
 
     return (
-        <div className="container">
+        <div className="container-sm">
             <form onSubmit={handleSubmit(handleRegistration, handleError)}>
                 <div className="col">
                     <div className="mb-3 col">
@@ -72,7 +72,7 @@ function Login() {
                     <button className="btn btn-success">Login</button>
                     <div className="mb-3">
                         <br/>
-                        <h5>If You Don't Have Account, Please <button onClick={() => navigate('/register')} className="btn btn-primary">Register</button> Here</h5>
+                        <h5>If You Don't Have Account, Please Register <button onClick={() => navigate('/register')} className="btn btn-primary">Here</button></h5>
                     </div>                 
                 </div>                
             </form>
