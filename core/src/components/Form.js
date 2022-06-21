@@ -47,7 +47,13 @@ function Form({ folder, create, setCreate, isDefault }) {
 
   const registerOptions = {
 
-    name: { required: "Name is required" },    
+    name: {
+      required: "Name is required" ,
+      maxLength: {
+        value: 50,
+        message: "Name can not be too long"
+      }
+    },    
 
   }    
 

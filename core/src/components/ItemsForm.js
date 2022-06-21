@@ -73,11 +73,7 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
         setShowItemForm(!showItemForm)
     }
 
-    const handleRegistration = (data) => {       
-        
-        data.password = data.password === "" ? item.password : data.password
-        data.description = (data.description === "" ? item.description : data.description)
-        data.url = (data.url === "" ? item.url : data.url)
+    const handleRegistration = (data) => {        
 
         isEditable ? updateItem(data) : InsertItem(data)
 
@@ -119,12 +115,22 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
     };
 
     const registerOptions = {
-        name: { required: "Name is required" },        
+        name: {
+            required: isEditable ? null : "Name is required" ,
+            maxLength: {
+                value: 60,
+                message: "Name can not be too long"
+            }
+        },        
         password: {
-          required: "Password is required",
+          required: isEditable ? null : "Password is required",
           minLength: {
             value: 8,
             message: "Password must have at least 8 characters"
+          },
+          maxLength: {
+            value: 255,
+            message: "Password can not be too long"
           },
           pattern: {
             value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
@@ -133,14 +139,18 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
         },
         description: {
             maxLength: {
-                value: 150,
-                message: "Description can not be too large"
+                value: 300,
+                message: "Description can not be too long"
             }
         },
         url: {
             pattern: {
                 value: /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/ig,
                 message: "Url must be like 'wwww.example.com' | 'example.com'"
+            },
+            maxLength:{
+                value: 255,
+                message: "URL can not be too long"
             }
         },
         folder: {required: "You must select one folder"},
@@ -149,11 +159,7 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
     return (
         <div className="accordion-item">
             <div className="card-body">
-                <div className="btn-group" role="group" aria-label="Basic example">
-                    <button className = "btn btn-success" onClick = {() => {
-                        setShowItemForm(!showItemForm);
-                        setIsEditable(false);                        
-                    }}>Create Item</button>
+                <div className="btn-group" role="group" aria-label="Basic example">                    
                     {isFull ?
                         <>
                             <button className = "btn btn-primary" onClick = {() => {
@@ -163,7 +169,10 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
                             <button className = "btn btn-danger" onClick = {() => deleteBtn(item)}>Delete</button>
                         </>
                         :
-                        null
+                        <button className = "btn btn-success" onClick = {() => {
+                            setShowItemForm(!showItemForm);
+                            setIsEditable(false);                        
+                        }}>Create Item</button>
                     }                    
                 </div>                         
             </div>
