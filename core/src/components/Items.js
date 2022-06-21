@@ -52,7 +52,7 @@ function Item(props) {
           </div>         
           <div className="row">                
             <div className="col">
-              <ItemsForm isFull={isItem} /> 
+              <button className="btn btn-success" onClick={ () => {} }>Create Item</button> 
               <br/>
               <button className = "btn btn-primary" onClick = {() => {setIsActive(!isActive); setIsItems(!isItem)}}>View Items</button>              
             </div>
