@@ -42,7 +42,8 @@ function Item(props) {
     <div className="accordion-item">
         <div className="">
           <div>
-            <h4><br/>{props.folder.name}</h4>            
+            <h4><br/>{props.folder.name}</h4>     
+            <h6>{items.length} Items</h6>       
           </div>         
           <div>              
             <br/>

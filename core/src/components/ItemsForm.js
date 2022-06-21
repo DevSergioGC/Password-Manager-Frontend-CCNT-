@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 
 function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {       
 
-    const { register, handleSubmit, formState: { errors } } = useForm();  
+    const { register, handleSubmit, formState: { errors }, reset } = useForm();  
     const token = Cookies.get('mytoken');
     const[isEditable, setIsEditable] = useState(false);  
     const[randomPassword, setPassword] = useState(null)  
@@ -33,11 +33,21 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
     },[folder])
 
     useEffect(() =>{
+
         if(!isActive){
+
             setShowItemForm(false);
-        }
-    }, [isActive]);   
-    
+            
+        }       
+
+    }, [isActive]);
+
+    useEffect(() => {
+        
+        reset();
+        
+    }, [showItemForm]);
+
     const deleteBtn = (item) => {
     
         APIService.Delete(item.id_item, token, "item", folder_id)           
@@ -77,7 +87,7 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
 
         isEditable ? updateItem(data) : InsertItem(data)
 
-        setIsActive(true);        
+        setIsActive(true);             
 
     };
 
