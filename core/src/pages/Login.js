@@ -60,6 +60,7 @@ function Login() {
                         type="password" 
                         {...register('password', registerOptions.password) }
                         />
+                        <checkbox ></checkbox>
                         <label className="text-danger">{errors?.password && errors.password.message}</label>
                     </div>   
                     <button className="btn btn-success">Login</button>

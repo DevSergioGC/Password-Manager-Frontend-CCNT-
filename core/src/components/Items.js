@@ -10,6 +10,7 @@ function Item(props) {
   const [items, setItems] = useState([]);   
   const [isActive, setIsActive] = useState(false); 
   const [create, setCreate] = useState(false);     
+  const [createItem, setCreateItem] = useState(false);     
   const token = Cookies.get('mytoken');
   const [isItem, setIsItems] = useState(false);
   let navigate = useNavigate();  
@@ -52,7 +53,10 @@ function Item(props) {
           </div>         
           <div className="row">                
             <div className="col">
-              <button className="btn btn-success" onClick={ () => {} }>Create Item</button> 
+              <button className="btn btn-success" onClick={ () => {setCreateItem(!createItem); setIsActive(!isActive);} }>Create Item</button> 
+              <br/>
+              <br/>
+              <ItemsForm createItem={createItem} setCreateItem={setCreateItem} />
               <br/>
               <button className = "btn btn-primary" onClick = {() => {setIsActive(!isActive); setIsItems(!isItem)}}>View Items</button>              
             </div>

@@ -4,14 +4,15 @@ import APIService from '../APIService';
 import {useNavigate} from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {       
+function ItemsForm({item, isActive, folder_id, setIsActive, isFull, setCreateItem, createItem}) {       
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm();  
     const token = Cookies.get('mytoken');
     const[isEditable, setIsEditable] = useState(false);  
     const[randomPassword, setPassword] = useState(null)  
     const[showItemForm, setShowItemForm] = useState(false); 
-    const[isChecked, setIsChecked] = useState(false)      
+    const[isChecked, setIsChecked] = useState(false);      
+    const[showPwd, setShowPwd] = useState(false);      
     const handleError = (errors) => {};
     let navigate = useNavigate();
 
@@ -87,7 +88,12 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
 
         isEditable ? updateItem(data) : InsertItem(data)
 
-        setIsActive(true);             
+        setIsActive(false); 
+        setCreateItem(!createItem);   
+        setShowItemForm(!showItemForm); 
+        setIsChecked(false);      
+        reset(registerOptions.password);
+        setShowPwd(false);
 
     };
 
@@ -169,24 +175,20 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
     return (
         <div className="accordion-item">
             <div className="card-body">
-                <div className="btn-group" role="group" aria-label="Basic example">                    
-                    {isFull ?
-                        <>
-                            <button className = "btn btn-primary" onClick = {() => {
-                                setShowItemForm(!showItemForm);
-                                setIsEditable(true);                                       
-                            }}>Update</button>
-                            <button className = "btn btn-danger" onClick = {() => deleteBtn(item)}>Delete</button>
-                        </>
-                        :
-                        <button className = "btn btn-success" onClick = {() => {
+                {createItem ? 
+                    null 
+                    : 
+                    <div className="btn-group" role="group" aria-label="Basic example">
+                        <button className = "btn btn-primary" onClick = {() => {
                             setShowItemForm(!showItemForm);
-                            setIsEditable(false);                        
-                        }}>Create Item</button>
-                    }                    
-                </div>                         
+                            setIsEditable(true);                                       
+                        }}>Update</button>
+                        <button className = "btn btn-danger" onClick = {() => deleteBtn(item)}>Delete</button>                                     
+                    </div>
+                }
+                                         
             </div>
-          {(showItemForm) && <div className="accordion-content">
+          {(showItemForm || createItem) && <div className="accordion-content">
           <div className="container">
             <form onSubmit={handleSubmit(handleRegistration, handleError)}>
                 <div className="col">
@@ -206,10 +208,10 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
                         <input
                         className="form-control" 
                         name="password" 
-                        type="password" 
+                        type= {showPwd ? "text" : "password"} 
                         value={isChecked ? randomPassword : null}                      
                         {...register('password', registerOptions.password) }
-                        />
+                        />                        
                         <label className="text-danger">{errors?.password && errors.password.message}</label>
                     </div> 
                     <div className="mb-3 col">
@@ -225,6 +227,19 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull}) {
                             />
                             <label className="form-check-label" for="flexCheckChecked">
                                 Generate Password
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <input 
+                            className="form-check-input" 
+                            type="checkbox"                           
+                            id="flexCheckChecked"
+                            onClick={ () => {
+                                setShowPwd(!showPwd);                                
+                            } }                            
+                            />
+                            <label className="form-check-label" for="flexCheckChecked">
+                                Show Password
                             </label>
                         </div>
                     </div>                  

@@ -9,13 +9,15 @@ function Register() {
   const handleError = (errors) => {};
   const [user, setUser] = useState([]);
   const [usernamed, setUSername] = useState([]);  
+  const[showPwd, setShowPwd] = useState(false); 
   let navigate = useNavigate(); 
 
   const handleRegistration = (data) => {   
 
     APIService.RegisterUser({'first_name':data.name, 'username': data.username, 'password': data.password})
     .then(navigate('/login'))
-    .catch(error => console.log(error))
+    .catch(error => console.log(error));
+    setShowPwd(!showPwd);
 
   };
 
@@ -51,7 +53,7 @@ function Register() {
         message: "Password must have at least 15 characters"
       },
       pattern: {
-        value: /^(?=.*\d)(?=.*[a-z])(?=(.*[0-9]){2,})(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[^\w\d\s]).{15,}$/gm,
+        value: /^(?=.*\d)(?=.*[a-z])(?=(.*[0-9]){2,})(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[^\w\d\s])(?=(.*[^0-9a-zA-Z\-\s\.\#\/\,]){2,}).{15,}/gm,
         message: "Password must have: 1 Uppercase | 2 Number | 2 Special Characters"
       }
     },
@@ -95,27 +97,38 @@ function Register() {
           <div className="mb-3 col">
             <label htmlFor="password" className="form-label">Password:</label>
             <input
-              type="password"
+              type={showPwd ? "text" : "password"} 
               className="form-control"
               name="password"
               {...register('password', registerOptions.password)}
             />
             <label className="text-danger">
               {errors?.password && errors.password.message}
-            </label>
-          </div>
+            </label>            
+          </div>          
           <div className="mb-3 col">
             <label htmlFor="password2" className="form-label">Confirm Password:</label>
             <input
-              type="password"
+              type={showPwd ? "text" : "password"}
               className="form-control"
               name="password2"
               {...register('password2', registerOptions.password2)}
             />
-            <label className="text-danger">
-              {errors?.password2 && errors.password2.message}              
-            </label>
+            <label className="text-danger">{errors?.password2 && errors.password2.message}</label>
             {registerOptions.password != registerOptions.password ? <label></label> : null}
+            <div className="form-check">
+              <input 
+                className="form-check-input" 
+                type="checkbox"                           
+                id="flexCheckChecked"
+                onClick={ () => {
+                    setShowPwd(!showPwd);                                
+                } }                            
+              />
+              <label className="form-check-label" for="flexCheckChecked">
+                Show Password
+              </label>
+            </div>
           </div>
           <button className = "btn btn-primary">Register</button>
         </div>
