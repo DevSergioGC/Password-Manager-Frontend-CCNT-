@@ -9,6 +9,7 @@ function Login() {
     const { register, handleSubmit, formState: { errors } } = useForm();  
     const handleError = (errors) => {};           
     let navigate = useNavigate();
+    const[showPwd, setShowPwd] = useState(false);
 
     const handleRegistration = (data) => {
 
@@ -57,11 +58,24 @@ function Login() {
                         <input
                         className="form-control" 
                         name="password" 
-                        type="password" 
+                        type={showPwd ? "text" : "password"} 
                         {...register('password', registerOptions.password) }
                         />
                         <checkbox ></checkbox>
                         <label className="text-danger">{errors?.password && errors.password.message}</label>
+                        <div className="form-check">
+                            <input 
+                                className="form-check-input" 
+                                type="checkbox"                           
+                                id="flexCheckChecked"
+                                onClick={ () => {
+                                    setShowPwd(!showPwd);                                
+                                } }                            
+                            />
+                            <label className="form-check-label" for="flexCheckChecked">
+                                Show Password
+                            </label>
+                        </div>
                     </div>   
                     <button className="btn btn-success">Login</button>
                     <div className="mb-3">
