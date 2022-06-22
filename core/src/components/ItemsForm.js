@@ -4,7 +4,7 @@ import APIService from '../APIService';
 import {useNavigate} from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-function ItemsForm({item, isActive, folder_id, setIsActive, isFull, setCreateItem, createItem}) {       
+function ItemsForm({item, isActive, folder_id, setIsActive, setCreateItem, createItem}) {       
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm();  
     const token = Cookies.get('mytoken');
@@ -175,20 +175,20 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull, setCreateIte
     return (
         <div className="accordion-item">
             <div className="card-body">
-                {createItem ? 
-                    null 
-                    : 
-                    <div className="btn-group" role="group" aria-label="Basic example">
-                        <button className = "btn btn-primary" onClick = {() => {
-                            setShowItemForm(!showItemForm);
-                            setIsEditable(true);                                       
-                        }}>Update</button>
-                        <button className = "btn btn-danger" onClick = {() => deleteBtn(item)}>Delete</button>                                     
-                    </div>
-                }
+                <div className="btn-group" role="group" aria-label="Basic example">
+                    <button className = "btn btn-success" onClick = {() => {
+                        setShowItemForm(!showItemForm);
+                        setIsEditable(false);                                       
+                    }}>Create Item</button>
+                    <button className = "btn btn-primary" onClick = {() => {
+                        setShowItemForm(!showItemForm);
+                        setIsEditable(true);                                       
+                    }}>Update Item</button>
+                    <button className = "btn btn-danger" onClick = {() => deleteBtn(item)}>Delete Item</button>                                     
+                </div>
                                          
             </div>
-          {(showItemForm || createItem) && <div className="accordion-content">
+          {(showItemForm) && <div className="accordion-content">
           <div className="container">
             <form onSubmit={handleSubmit(handleRegistration, handleError)}>
                 <div className="col">
@@ -213,36 +213,36 @@ function ItemsForm({item, isActive, folder_id, setIsActive, isFull, setCreateIte
                         {...register('password', registerOptions.password) }
                         />                        
                         <label className="text-danger">{errors?.password && errors.password.message}</label>
-                    </div> 
-                    <div className="mb-3 col">
-                        <div className="form-check">
-                            <input 
-                            className="form-check-input" 
-                            type="checkbox"                           
-                            id="flexCheckChecked"
-                            onClick={ () => {
-                                setIsChecked(!isChecked);
-                                setPassword(generarString(20));
-                            } }                            
-                            />
-                            <label className="form-check-label" for="flexCheckChecked">
-                                Generate Password
-                            </label>
+                        <div className="mb-3 col">
+                            <div className="form-check">
+                                <input 
+                                className="form-check-input" 
+                                type="checkbox"                           
+                                id="flexCheckChecked"
+                                onClick={ () => {
+                                    setIsChecked(!isChecked);
+                                    setPassword(generarString(20));
+                                } }                            
+                                />
+                                <label className="form-check-label" for="flexCheckChecked">
+                                    Generate Password
+                                </label>
+                            </div>
+                            <div className="form-check">
+                                <input 
+                                className="form-check-input" 
+                                type="checkbox"                           
+                                id="flexCheckChecked"
+                                onClick={ () => {
+                                    setShowPwd(!showPwd);                                
+                                } }                            
+                                />
+                                <label className="form-check-label" for="flexCheckChecked">
+                                    Show Password
+                                </label>
+                            </div>
                         </div>
-                        <div className="form-check">
-                            <input 
-                            className="form-check-input" 
-                            type="checkbox"                           
-                            id="flexCheckChecked"
-                            onClick={ () => {
-                                setShowPwd(!showPwd);                                
-                            } }                            
-                            />
-                            <label className="form-check-label" for="flexCheckChecked">
-                                Show Password
-                            </label>
-                        </div>
-                    </div>                  
+                    </div>                                      
                     <div className="mb-3 col">
                         <label htmlFor="description" className="form-label">Description:</label>
                         <textarea
