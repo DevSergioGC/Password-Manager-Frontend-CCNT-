@@ -136,21 +136,6 @@ function Register() {
     </div>
 
   );
-
-  /*
-
-  let navigate = useNavigate()
-
-  const RegisterBtn = () => {
-
-    APIService.RegisterUser({'first_name':formValues.name, 'username': formValues.username, 'password': formValues.password})
-    .then(navigate('/login'))
-    .catch(error => console.log(error))
-
-  } 
-
-  */
-
   
 }
 

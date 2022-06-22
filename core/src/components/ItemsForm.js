@@ -4,7 +4,7 @@ import APIService from '../APIService';
 import {useNavigate} from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-function ItemsForm({item, isActive, folder_id, setIsActive, setCreateItem, createItem}) {       
+function ItemsForm({item, isActive, folder_id, setIsActive}) {       
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm();  
     const token = Cookies.get('mytoken');
