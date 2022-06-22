@@ -82,8 +82,8 @@ function Form({ folder, create, setCreate, isDefault }) {
             setIsActive(!isActive);
             setCreate(!create)
             setIsEditable(true);
-          }}>Update</button>
-          <button className="btn btn-secondary" onClick={() => deleteBtn(folder)}>Delete</button>
+          }}>Update Folder</button>
+          <button className="btn btn-secondary" onClick={() => deleteBtn(folder)}>Delete Folder</button>
         </div>
       }
       {(isActive || create) && <div className="accordion-content">
